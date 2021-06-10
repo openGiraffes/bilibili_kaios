@@ -1,0 +1,82 @@
+/* First of all */
+* {
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0;
+  font-size: 14px;
+  text-align: left;
+}
+
+/* Soft Keys */
+#softkeys {
+  z-index: 100;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background: #dadada;
+  padding: 3px 5px;
+}
+
+#softkeys > * {
+  display: inline-block;
+  width: 72px;
+  padding: 0 5px;
+}
+
+#softkey-left,
+#softkey-right {
+  font-weight: 400;
+  font-size: 14px;
+  color: #323232;
+  line-height: 24px;
+  text-align: left;
+}
+
+#softkey-right {
+  text-align: right;
+  line-height: 24px;
+}
+
+#softkey-center {
+  font-weight: 600;
+  font-size: 16px;
+  width: 76px;
+  color: #323232;
+  text-align: center;
+}
+
+.items {
+  padding: 6px;
+  height: calc(100% - 30px);
+  margin-bottom: 30px;
+}
+
+.song_info,
+.user_info {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.song_info > img {
+  height: 100%;
+  max-width: 96px;
+}
+
+.song_info > .song_desc {
+  padding: 5px 0;
+  width: calc(100% - 96px);
+}
+
+.user_info > img {
+  height: 100%;
+  max-width: 64px;
+  margin-left: 6px;
+}
+
+.user_info > .user_desc {
+  padding: 5px 0;
+  margin-left: 12px;
+  width: calc(100% - 64px);
+}

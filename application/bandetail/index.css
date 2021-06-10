@@ -1,0 +1,126 @@
+/* First of all */
+* {
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
+
+/* Soft Keys */
+#softkeys {
+  z-index: 100;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background: #dadada;
+  padding: 3px 5px;
+}
+
+#softkeys > * {
+  display: inline-block;
+  width: 72px;
+  padding: 0 5px;
+}
+
+#softkey-left,
+#softkey-right {
+  font-weight: 400;
+  font-size: 14px;
+  color: #323232;
+  line-height: 24px;
+  text-align: left;
+}
+
+#softkey-right {
+  text-align: right;
+  line-height: 24px;
+}
+
+#softkey-center {
+  font-weight: 600;
+  font-size: 16px;
+  width: 76px;
+  color: #323232;
+  text-align: center;
+}
+
+#container {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+/* Tab */
+.tab {
+  width: 100%;
+  height: 30px;
+  position: fixed;
+  top: 0px;
+  background-color: white;
+  z-index: 2;
+}
+
+.tab li {
+  float: left;
+  list-style: none;
+  margin: 7.5;
+  font-size: 14px;
+  position: relative;
+  top: -3px;
+}
+
+/* Item */
+.items {
+  width: 100%;
+  height: calc(100% - 30px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 1;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.focus {
+  border-bottom: 3px solid #d26585;
+}
+
+.item {
+  position: relative;
+  width: 100%;
+  height: 28px;
+  background-color: white;
+  outline: none;
+  padding: 2px;
+}
+
+.item:focus,
+.item.select {
+  background-color: #d26585;
+  color: white;
+}
+
+.item img {
+  height: 100%;
+  float: left;
+  outline: none;
+}
+
+.item .title {
+  position: absolute;
+  left: 109px;
+  top: 3px;
+  overflow: hidden;
+  height: 36px;
+  line-height: 18px;
+  font-size: 12px;
+}
+
+.item .author {
+  position: absolute;
+  left: 130px;
+  bottom: 2px;
+  font-size: 12px;
+  color: rgb(115, 115, 115);
+  white-space: nowrap;
+}

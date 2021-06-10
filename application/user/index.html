@@ -1,0 +1,63 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/common.css" />
+    <title>凯哔哩-用户</title>
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/jquery.cookie.min.js"></script>
+    <script src="../lib/md5.min.js"></script>
+    <script src="../lib/jsencrypt.min.js"></script>
+    <script src="../lib/loading.js"></script>
+    <script src="../app.js"></script>
+    <script src="./index.js"></script>
+    <script src="./user.js"></script>
+</head>
+
+<body>
+    <div class="login">
+        <p>
+            <label>账号</label>
+            <input id="name" class="item" type="text" />
+        </p>
+        <p>
+            <label>密码</label>
+            <input id="pwd" class="item" type="password" />
+        </p>
+    </div>
+    <div class="info">
+        <img class="item" width="64" id="face" />
+        <p id="uid" class="item">UID</p>
+        <p id="uname" class="item">用户名</label>
+        <p>
+            <label id="lv" class="item">LV值</label>
+            <label id="exp" class="item">经验值</label>
+        </p>
+        <p>
+            <label id="focus" class="item">关注数</label>
+            <label id="fans" class="item">粉丝数</label>
+        </p>
+        <p id="sign" class="item">签名</p>
+    </div>
+    <div id="menu">
+        <ul id="menucontainer">
+            <li class="menuitem" data-tag="cb">投稿</li>
+            <li class="menuitem" data-tag="dy">动态</li>
+            <li class="menuitem" data-tag="ct">收藏</li>
+            <li class="menuitem" data-tag="at">关注</li>
+        </ul>
+    </div>
+</body>
+
+<!--导航键-->
+<footer id="softkeys">
+    <div id="softkey-left">登录</div>
+    <div id="softkey-center">主页</div>
+    <div id="softkey-right">选项</div>
+</footer>
+<script>
+    window.onload = loaduserfromfile();
+</script>
+</html>

@@ -1,0 +1,45 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" type="text/css" href="./index.css" />
+  <link rel="stylesheet" type="text/css" href="../lib/common.css" />
+  <meta name="referrer" content="never" />
+  <title>凯哔哩-直播</title>
+  <script src="../lib/jquery.min.js"></script>
+  <script src="../lib/jquery.cookie.min.js"></script>
+  <script src="../lib/jsencrypt.min.js"></script>
+  <script src="../lib/md5.min.js"></script>
+  <script src="../lib/flv.min.js"></script>
+  <script src="../lib/loading.js"></script>
+  <script src="../app.js"></script>
+  <script src="../danmaku.js"></script>
+  <script src="./liveDanmaku.js"></script>
+  <script src="./index.js"></script>
+  
+</head>
+
+<body>
+  <video class="player" id="player" controls></video>
+  <div class="tab">
+    <ul>
+      <li tabIndex="0" class="focus">简介</li>
+      <li tabIndex="1">弹幕</li>
+    </ul>
+  </div>
+  <div class="items">
+    <div class="item" tabIndex="0">
+      <a id="title">这个是标题</a>
+      <a id="info">各种数据</a>
+    </div>
+  </div>
+
+  <footer id="softkeys">
+    <div id="softkey-left">全屏</div>
+    <div id="softkey-center">暂停</div>
+    <div id="softkey-right">重新加载</div>
+  </footer>
+</body>
+
+</html>

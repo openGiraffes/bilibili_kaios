@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/common.css" />
+    <title>凯哔哩-设置</title>
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/jquery.cookie.min.js"></script>
+    <script src="../lib/md5.min.js"></script>
+    <script src="../lib/jsencrypt.min.js"></script>
+    <script src="../lib/loading.js"></script>
+    <script src="../app.js"></script>
+    <script src="./index.js"></script>
+</head>
+
+<body>
+    <div id="container">
+        <p>
+            <label>视频清晰度：</label>
+            <select id="video_qn" class="item">
+                <option value="16">360P</option>
+                <option value="32">480P</option>
+                <option value="64">720P</option>
+            </select>
+        </p>
+        <p>
+            <label>直播弹幕刷新速度(s)：</label>
+            <input class="item" type="number" id="danmaku_speed" min="1" max="60" />
+        </p>
+    </div>
+</body>
+
+<footer id="softkeys">
+    <div id="softkey-left">保存</div>
+    <div id="softkey-center"></div>
+    <div id="softkey-right">返回</div>
+</footer>
+
+</html>

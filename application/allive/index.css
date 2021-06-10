@@ -1,0 +1,99 @@
+/* First of all */
+* {
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
+
+/* Soft Keys */
+#softkeys {
+  z-index: 100;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background: #dadada;
+  padding: 3px 5px;
+}
+
+#softkeys > * {
+  display: inline-block;
+  width: 72px;
+  padding: 0 5px;
+}
+
+#softkey-left,
+#softkey-right {
+  font-weight: 400;
+  font-size: 14px;
+  color: #323232;
+  line-height: 24px;
+  text-align: left;
+}
+
+#softkey-right {
+  text-align: right;
+  line-height: 24px;
+}
+
+#softkey-center {
+  font-weight: 600;
+  font-size: 16px;
+  width: 76px;
+  color: #323232;
+  text-align: center;
+}
+
+#container {
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  height: calc(100% - 30px);
+  margin-bottom: 30px;
+}
+
+.item {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  background-color: white;
+  outline: none;
+  margin: 4px;
+}
+
+.item:focus,
+.item.select {
+  background-color: #d26585;
+  color: white;
+}
+
+.head2 {
+  width: 100px;
+}
+
+.item img {
+  height: 100%;
+  float: left;
+  outline: none;
+}
+
+.item .title {
+  position: absolute;
+  left: 109px;
+  top: 3px;
+  overflow: hidden;
+  height: 36px;
+  line-height: 18px;
+  font-size: 12px;
+}
+
+.item .author {
+  position: absolute;
+  left: 130px;
+  bottom: 2px;
+  font-size: 12px;
+  color: rgb(115, 115, 115);
+  white-space: nowrap;
+}

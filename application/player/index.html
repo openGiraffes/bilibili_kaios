@@ -1,0 +1,80 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="referrer" content="never" />
+  <link rel="stylesheet" type="text/css" href="./index.css" />
+  <link rel="stylesheet" type="text/css" href="../lib/common.css" />
+  <title>凯哔哩-播放器</title>
+  <script src="../lib/jquery.min.js"></script>
+  <script src="../lib/flv.min.js" charset="utf-8"></script>
+  <script src="../lib/jquery.cookie.min.js"></script>
+  <script src="../lib/md5.min.js"></script>
+  <script src="../lib/jsencrypt.min.js"></script>
+  <script src="../lib/loading.js"></script>
+  <script src="../app.js"></script>
+  <script src="../danmaku.js"></script>
+  <script src="./playinfo.js"></script>
+  <script src="./index.js"></script>
+</head>
+
+<body>
+  <!--播放器-->
+  <div id='palyercontainter'>
+    <video id="player" class="video_normal" controls referrerpolicy="never"> </video>
+  </div>
+  <!--导航栏-->
+  <div class="tab">
+    <ul>
+      <li tabIndex="0" class="focus">简介</li>
+      <li tabIndex="1" id="pages">分集</li>
+      <li tabIndex="2" id="comments">评论</li>
+    </ul>
+  </div>
+  <!--视频信息（弹幕、播放、三连等）-->
+  <div class="items">
+    <!--标题、播放、弹幕量-->
+    <div class="item" id="title" tabIndex="0">
+      <a id="title">标题加载中</a>
+      <br>
+      <div id="info">
+        <div id="view">
+          <img src="../img/inside_icon/play/view.svg">
+          <a id="view">-</a>
+        </div>
+        <div id="danmaku">
+          <img src="../img/inside_icon/play/danmaku.svg">
+          <a id="danmaku">-</a>
+        </div>
+      </div>
+    </div>
+    <!--点赞、投币、收藏-->
+    <div class="item" id="sanlian" tabIndex="1">
+      <div id="like">
+        <img src="../img/inside_icon/play/like.svg">
+        <a id="like">加载中</a>
+      </div>
+      <div id="coin">
+        <img src="../img/inside_icon/play/coin.svg">
+        <a id="coin">加载中</a>
+      </div>
+      <div id="favorite">
+        <img src="../img/inside_icon/play/favorite.svg">
+        <a id="favorite">加载中</a>
+      </div>
+    </div>
+    <div class="item" id="desc" tabIndex="2"></div>
+    <div class="item" tabIndex="3"></div>
+    <div class="item" tabIndex="4"></div>
+  </div>
+  <div class="pages" style="display: none;"></div>
+  <!--导航键-->
+  <footer id="softkeys">
+    <div id="softkey-left">全屏</div>
+    <div id="softkey-center">暂停</div>
+    <div id="softkey-right">加载中</div>
+  </footer>
+</body>
+
+</html>

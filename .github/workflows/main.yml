@@ -1,0 +1,42 @@
+name: Package OmniSD zip nightly
+
+on:
+  schedule:
+    - cron: "0 22 * * *"  # scheduled at 06:00 (UTC+8) everyday
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Package application.zip
+        run: |
+          ls application
+          cd application
+          zip -r application.zip ./*
+          mv application.zip ../application.zip
+          cd ..
+          zip -r bilibili_kaios-omnisd-nightly.zip application.zip metadata.json
+          mkdir workdir
+          mv application.zip workdir/application.zip
+          mv metadata.json workdir/metadata.json
+
+      - name: Build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: bilibili_kaios-omnisd-nightly
+          path: ./workdir/*
+
+      - name: Upload nightly release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.ACTION_TOKEN }}
+          file: ./bilibili_kaios-omnisd-nightly.zip
+          tag: ${{ github.ref }}
+          body: "Nightly build"
+          file_glob: true
+          prerelease: true
+          overwrite: true

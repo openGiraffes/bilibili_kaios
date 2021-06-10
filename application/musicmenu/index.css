@@ -1,0 +1,80 @@
+/* First of all */
+* {
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0;
+  font-size: 14px;
+  text-align: left;
+}
+
+/* Soft Keys */
+#softkeys {
+  z-index: 100;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background: #dadada;
+  padding: 3px 5px;
+}
+
+#softkeys > * {
+  display: inline-block;
+  width: 72px;
+  padding: 0 5px;
+}
+
+#softkey-left,
+#softkey-right {
+  font-weight: 400;
+  font-size: 14px;
+  color: #323232;
+  line-height: 24px;
+  text-align: left;
+}
+
+#softkey-right {
+  text-align: right;
+  line-height: 24px;
+}
+
+#softkey-center {
+  font-weight: 600;
+  font-size: 16px;
+  width: 76px;
+  color: #323232;
+  text-align: center;
+}
+
+.items {
+  padding: 6px;
+  height: calc(100% - 30px);
+  margin-bottom: 30px;
+}
+
+.menu_info {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.menu_info > img {
+  height: 100%;
+  margin-top: 8px;
+  margin-left: 4px;
+  max-width: 96px;
+}
+
+.menu_info > .menu_desc {
+  padding: 5px 0;
+  width: calc(100% - 96px);
+}
+
+.item {
+  border: 1px solid gray;
+  padding: 2px 4px;
+}
+
+.item.select {
+  border: 1px solid #d26585;
+}

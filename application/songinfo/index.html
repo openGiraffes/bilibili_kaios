@@ -1,0 +1,48 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/common.css" />
+    <title>凯哔哩-音乐</title>
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/jquery.cookie.min.js"></script>
+    <script src="../lib/md5.min.js"></script>
+    <script src="../lib/jsencrypt.min.js"></script>
+    <script src="../lib/loading.js"></script>
+    <script src="../app.js"></script>
+    <script src="./index.js"></script>
+</head>
+
+<body>
+    <div class="items">
+        <div class="song_info">
+            <img id="cover" />
+            <div class="song_desc">
+                <p id="title"></p>
+                <p>收听：<label id="play"></label></p>
+                <p>收藏：<label id="collection"></label></p>
+                <p>分享：<label id="share"></label></p>
+            </div>
+        </div>
+        <div id="songName">
+        </div>
+        <div class="user_info">
+            <img id="uface" />
+            <div class="user_desc">
+                <p id="uname"></p>
+                <p>发布于<label id="pt"></label></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!--导航键-->
+<footer id="softkeys">
+    <div id="softkey-left"></div>
+    <div id="softkey-center">暂停</div>
+    <div id="softkey-right">返回</div>
+</footer>
+
+</html>
