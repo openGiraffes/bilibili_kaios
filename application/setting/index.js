@@ -11,6 +11,9 @@ function loadSetting() {
         var qn = $.getData('video_qn');
         if (qn == '') qn = 16;
         $("#video_qn").val(qn);
+        var danmaku = $.getData('danmaku');
+        if (danmaku == '') danmaku = 0;
+        $("#danmaku").prop("checked", danmaku == 1);
     }
     catch (e) {
         console.log(e);
@@ -22,6 +25,8 @@ function saveSetting() {
         $.setData('danmaku_speed', speed);
         var qn = $("#video_qn").val();
         $.setData('video_qn', qn);
+        var danmaku = $('#danmaku').is(':checked');
+        $.setData('danmaku', danmaku == 1);
         alert('保存成功！');
     }
     catch (e) {
@@ -49,6 +54,10 @@ function handleKeydown(e) {
                     saveSetting();
             }
             window.location.href = '../index.html';
+            break;
+        case 'Enter':
+            if ($('#danmaku.select').length > 0)
+                $('#danmaku').focus();
             break;
     }
 }

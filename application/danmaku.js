@@ -1,4 +1,27 @@
 $.extend({
+    danmaku: null,
+    initDanamku: function (elementId) {
+        this.danmaku = new Danmaku({
+            container: document.getElementById(elementId),
+            media: document.getElementById(elementId),
+            engine: 'canvas',
+            speed: 144
+        });
+    },
+    showDanmaku: function (text, time, color) {
+        if (typeof color == 'undefined' || color == '')
+            color = '#ffffff';
+        var comment = {
+            text: text,
+            style: {
+                fontSize: '12px',
+                color: color
+            }
+        };
+        if (typeof time != 'undefined' && time != '' && time > 0)
+            comment.time = time;
+        this.danmaku.emit(comment);
+    },
     sendDanmaku: function (aid, cid, mid, p, color, msg) {
         var json = null;
         var ts = $.getTs();
@@ -74,5 +97,10 @@ $.extend({
             console.log(e);
         }
         return json;
+    },
+    getDanmaku: function (cid) {
+        var url = 'https://api.bilibili.com/x/v1/dm/list.so?oid=' + cid;
+        var result = $.getWeb(url);
+        console.log(result);
     }
 });

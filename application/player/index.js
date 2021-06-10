@@ -18,6 +18,7 @@ $(function () {
 	}
 	getInfo();
 	getIsLike();
+	$.initDanamku('#player');
 });
 function playVideo(url, type) {
 	if (typeof player !== "undefined") {
