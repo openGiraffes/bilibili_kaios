@@ -1,4 +1,19 @@
+window.danmaku = null;
 $.extend({
+    showDanmaku: function (text, time, color) {
+        if (typeof color == 'undefined' || color == '')
+            color = '#ffffff';
+        var comment = {
+            text: text,
+            style: {
+                fontSize: '12px',
+                color: color
+            }
+        };
+        if (typeof time != 'undefined' && time != '' && time > 0)
+            comment.time = time;
+        danmaku.emit(comment);
+    },
     sendDanmaku: function (aid, cid, mid, p, color, msg) {
         var json = null;
         var ts = $.getTs();
@@ -74,5 +89,50 @@ $.extend({
             console.log(e);
         }
         return json;
+    },
+    getDanmaku: function (rootElementId, elementId, cid) {
+        try {
+            var comments = [];
+            var url = 'https://api.bilibili.com/x/v1/dm/list.so?oid=' + cid;
+            var result = $.getWeb(url);
+            var nodes = result.getElementsByTagName('d');
+            for (var idx = 0; idx < nodes.length; idx++) {
+                try {
+                    var content = nodes[idx].textContent;
+                    var attributes = nodes[idx].attributes[0].nodeValue.split(',');
+                    var mode = 'rtl', time = parseFloat(attributes[0]);
+                    switch (attributes[1]) {
+                        case '4':
+                            mode = 'bottom';
+                            break;
+                        case '5':
+                            mode = 'top';
+                            break;
+                    }
+                    comments.push({
+                        text: content,
+                        mode: mode,
+                        time: time,
+                        style: {
+                            font: '12px',
+                            fillStyle: '#fff'
+                        }
+                    });
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+            window.danmaku = new Danmaku({
+                container: document.getElementById(rootElementId),
+                media: document.getElementById(elementId),
+                engine: 'canvas',
+                comments: comments,
+                speed: 100
+            });
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
 });
