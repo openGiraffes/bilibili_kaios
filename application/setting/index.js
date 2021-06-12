@@ -26,7 +26,7 @@ function saveSetting() {
         var qn = $("#video_qn").val();
         $.setData('video_qn', qn);
         var danmaku = $('#danmaku').is(':checked');
-        $.setData('danmaku', danmaku == 1);
+        $.setData('danmaku', danmaku ? 1 : 0);
         alert('保存成功！');
     }
     catch (e) {
@@ -56,8 +56,10 @@ function handleKeydown(e) {
             window.location.href = '../index.html';
             break;
         case 'Enter':
-            if ($('#danmaku.select').length > 0)
-                $('#danmaku').focus();
+            if ($('#danmaku.select').length > 0) {
+                var danmaku = $('#danmaku').is(':checked');
+                $("#danmaku").prop("checked", !danmaku);
+            }
             break;
     }
 }

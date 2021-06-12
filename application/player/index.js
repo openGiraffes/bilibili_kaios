@@ -1,10 +1,12 @@
-var commentpage = 1, islike = 0, qn = 16;
+var commentpage = 1, islike = 0, qn = 16, danmaku = 0;
 let player = null;
 let aid = 0, bvid = 0, cid = 0, mid = 0, season_type = 0;
 $(function () {
 	mid = $.getData('mid');
 	qn = $.getData('video_qn');
 	if (qn == '') qn = 16;
+	danmaku = $.getData('danmaku');
+	if (danmaku == '') danmaku = 0;
 	aid = $.getQueryVar('aid');
 	cid = $.getQueryVar('cid');
 	bvid = $.getQueryVar('bvid');
@@ -18,7 +20,6 @@ $(function () {
 	}
 	getInfo();
 	getIsLike();
-	$.initDanamku('#player');
 });
 function playVideo(url, type) {
 	if (typeof player !== "undefined") {
@@ -62,6 +63,8 @@ function playV(part) {
 					player.width = 240;
 					player.height = 150;
 					player.play();
+					if (danmaku == 1)
+						$.getDanmaku('palyercontainter', 'player', cid);
 				}
 			}
 			catch (err) {
