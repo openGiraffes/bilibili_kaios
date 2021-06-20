@@ -92,44 +92,48 @@ $.extend({
     },
     getDanmaku: function (rootElementId, elementId, cid) {
         try {
-            var comments = [];
             var url = 'https://api.bilibili.com/x/v1/dm/list.so?oid=' + cid;
             var result = $.getWeb(url);
             var nodes = result.getElementsByTagName('d');
-            for (var idx = 0; idx < nodes.length; idx++) {
-                try {
-                    var content = nodes[idx].textContent;
-                    var attributes = nodes[idx].attributes[0].nodeValue.split(',');
-                    var mode = 'rtl', time = parseFloat(attributes[0]);
-                    switch (attributes[1]) {
-                        case '4':
-                            mode = 'bottom';
-                            break;
-                        case '5':
-                            mode = 'top';
-                            break;
-                    }
-                    comments.push({
-                        text: content,
-                        mode: mode,
-                        time: time,
-                        style: {
-                            font: '12px',
-                            fillStyle: '#fff'
+            var task = function () {
+                var comments = [];
+                for (var idx = 0; idx < nodes.length; idx++) {
+                    try {
+                        var content = nodes[idx].textContent;
+                        var attributes = nodes[idx].attributes[0].nodeValue.split(',');
+                        var mode = 'rtl', time = parseFloat(attributes[0]);
+                        switch (attributes[1]) {
+                            case '4':
+                                mode = 'bottom';
+                                break;
+                            case '5':
+                                mode = 'top';
+                                break;
                         }
-                    });
+                        comments.push({
+                            text: content,
+                            mode: mode,
+                            time: time,
+                            style: {
+                                font: '12px',
+                                fillStyle: '#fff'
+                            }
+                        });
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
                 }
-                catch (e) {
-                    console.log(e);
-                }
-            }
-            window.danmaku = new Danmaku({
-                container: document.getElementById(rootElementId),
-                media: document.getElementById(elementId),
-                engine: 'canvas',
-                comments: comments,
-                speed: 100
-            });
+                window.danmaku = new Danmaku({
+                    container: document.getElementById(rootElementId),
+                    media: document.getElementById(elementId),
+                    engine: 'canvas',
+                    comments: comments,
+                    speed: 80
+                });
+
+            };
+            setTimeout(task, 60);
         }
         catch (e) {
             console.log(e);

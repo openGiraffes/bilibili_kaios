@@ -67,6 +67,7 @@ function load() {
     }
 }
 function handleKeydown(e) {
+    $.clearEvent(e);
     switch (e.key) {
         case 'ArrowRight':
             tab(1);

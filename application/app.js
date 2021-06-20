@@ -12,6 +12,16 @@ const tv = {
     secret: '59b43e04ad6965f34319062b478f83dd'
 };
 $.extend({
+    clearEvent: function (e) {
+        try {
+            var key = e.key;
+            if (key != "EndCall" && key.toLowerCase().indexOf('arrow') == -1)
+                e.preventDefault();
+        }
+        catch (e) {
+            console.log(e);
+        }
+    },
     initApi: function () {
         $.ajaxSettings.xhr = function () {
             try {

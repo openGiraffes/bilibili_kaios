@@ -208,6 +208,7 @@ function buildImageGrid(pics) {
     return html + '</div>';
 }
 function handleKeydown(e) {
+    $.clearEvent(e);
     switch (e.key) {
         case 'ArrowUp':
             nav(-1);
@@ -225,7 +226,7 @@ function handleKeydown(e) {
         case 'E':
         case 'Backspace':
         case 'SoftRight':
-            window.location.href = '../user/index.html';
+            window.location.href = '../user/index.html?mid=' + userId;
             break;
     }
 }

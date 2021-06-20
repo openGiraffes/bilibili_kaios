@@ -155,7 +155,6 @@ function nav(move) {
   else if (tab_location === 1) {
     const currentIndex = document.activeElement.tabIndex;
     var next = currentIndex + move;
-
     const items = document.querySelectorAll('.itemcomment');
     if (next >= items.length) {
       next = items.length - 1;
@@ -179,41 +178,42 @@ function getLiveRoomNumer(uid) {
   var id = ''
   $.ajax({
     url: link,
+    async: false,
     success: function (result) {
       id = result.data.live_room.roomid.toString();
       var name = result.data.name;
       var sign = result.data.sign;
       var title = result.data.live_room.title;
       setData(name, sign, title);
-    },
-    async: false
-  })
-  return id
+    }
+  });
+  return id;
 }
 
 function fullscreen(value) {
   if (value == false) {
     document.exitFullscreen();
     $('#player').attr('class', 'player');
-  } else if (value == true) {
+  }
+  else if (value == true) {
     document.documentElement.requestFullscreen();
     $('#player').attr('class', 'player_fullscreen');
-  };
+  }
 }
 
 function enter() {
   if ($('#softkey-center').text() === '查看') {
     var items = document.querySelectorAll('.comment');
     var targetElement = items[document.activeElement.tabIndex];
-    if (targetElement) {
+    if (targetElement)
       alert($(targetElement).text());
-    }
   }
   else {
     if (document.getElementById('player').paused == true) {
       document.getElementById('player').play();
       $('#softkey-center').text('暂停');
-    } else {
+    }
+    else {
       document.getElementById('player').pause();
       $('#softkey-center').text('播放');
     }
@@ -221,9 +221,7 @@ function enter() {
 }
 
 function handleKeydown(e) {
-  if (e.key != "EndCall") {
-    e.preventDefault();//清除默认行为（滚动屏幕等）
-  }
+  $.clearEvent(e);
   switch (e.key) {
     case 'ArrowUp':
       nav(-1);
@@ -246,13 +244,10 @@ function handleKeydown(e) {
     case 'Q':
     case 'SoftLeft':
       if (tab_location === 0) {
-        //切换全屏
-        if ($('#player').attr('class') == 'player') {
-          fullscreen(true);
-        } else {
-          fullscreen(false);
-        }
-      } else if (tab_location === 1) {
+        var v = $('#player').attr('class') == 'player';
+        fullscreen(v);
+      }
+      else if (tab_location === 1) {
         getComments();
       }
       break;
@@ -265,9 +260,8 @@ function handleKeydown(e) {
         var text = prompt("请输入弹幕内容", "");
         if (text != '') {
           var result = $.sendLiveDanmaku(thisRoomId, text);
-          if (result.code != 0) {
+          if (result.code != 0)
             alert('发送弹幕失败！' + result.message);
-          }
         }
       }
       break;

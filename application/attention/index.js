@@ -10,6 +10,7 @@ $(function () {
 });
 
 function handleKeydown(e) {
+    $.clearEvent(e);
     switch (e.key) {
         case 'ArrowUp':
             nav(-1);

@@ -202,8 +202,7 @@ function toggleFullScreen() {
 	}
 }
 function handleKeydown(e) {
-	if (e.key != "EndCall")
-		e.preventDefault();
+	$.clearEvent(e);
 	switch (e.key) {
 		case 'ArrowUp':
 			nav(-1);
@@ -583,3 +582,7 @@ function getParts() {
 	}
 }
 let playInfos = [];
+window.unload = function () {
+	if (window.danmaku != null && typeof window.danmaku != 'undefined')
+		window.danmaku.destroy();
+}

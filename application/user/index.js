@@ -28,6 +28,7 @@ $(function () {
 });
 
 function handleKeydown(e) {
+    $.clearEvent(e);
     switch (e.key) {
         case 'ArrowUp':
             nav(-1);
@@ -48,9 +49,11 @@ function handleKeydown(e) {
             }
             break;
         case 'Enter':
-        case 'Backspace':
             if (!isOpen)
                 window.location.href = '../index.html';
+            break;
+        case 'Backspace':
+            window.location.href = '../index.html';
             break;
         case 'E':
         case 'SoftRight':
