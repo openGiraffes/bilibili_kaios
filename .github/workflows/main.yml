@@ -35,7 +35,7 @@ jobs:
         with:
           repo_token: ${{ secrets.ACTION_TOKEN }}
           file: ./bilibili_kaios-omnisd-nightly.zip
-          tag: ${{ github.ref }}
+          tag: nightly
           body: "Nightly build"
           file_glob: true
           prerelease: true
