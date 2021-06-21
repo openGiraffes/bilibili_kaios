@@ -3,7 +3,7 @@
   "description": "哔哩哔哩KaiOS版",
   "version": "1.8.2",
   "launch_path": "/index.html",
-  "type": "privileged",
+  "type": "certified",
   "origin": "app://kai.baiyang.bilibili",
   "icons": {
     "56": "https://cdn.jsdelivr.net/gh/openkaios/bilibili_kaios@main/application/img/icons/icon56x56.png",
