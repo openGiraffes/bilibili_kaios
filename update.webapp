@@ -2,7 +2,7 @@
   "name": "哔哩哔哩",
   "description": "哔哩哔哩KaiOS版",
   "version": "1.8.2",
-  "launch_path": "/index.html",
+  "launch_path": "https://cdn.jsdelivr.net/gh/openkaios/bilibili_kaios@main/application/index.html",
   "type": "certified",
   "origin": "app://kai.baiyang.bilibili",
   "icons": {
