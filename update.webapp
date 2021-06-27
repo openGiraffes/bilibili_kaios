@@ -8,7 +8,7 @@
     "56": "https://cdn.jsdelivr.net/gh/openkaios/bilibili_kaios@main/application/img/icons/icon56x56.png",
     "128": "https://cdn.jsdelivr.net/gh/openkaios/bilibili_kaios@main/application/img/icons/icon128x128.png"
   },
+  "launch_path": "https://raw.fastgit.org/openkaios/bilibili_kaios/main/application/index.html",
   "name": "哔哩哔哩",
-  "package_path": "https://git.yumenaka.net/https://github.com/openkaios/bilibili_kaios/releases/download/1.8.2/bilibili_kaios-omnisd-1.8.2.zip",
-  "type": "privileged"
+  "package_path": "https://git.yumenaka.net/https://github.com/openkaios/bilibili_kaios/releases/download/1.8.2/bilibili_kaios-omnisd-1.8.2.zip"
 }
