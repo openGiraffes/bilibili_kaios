@@ -1,6 +1,6 @@
 {
   "name": "哔哩哔哩",
-  "package_path": "https://raw.githubusercontent.com/openkaios/bilibili_kaios/main/application.zip",
+  "package_path": "https://cdn.staticaly.com/gh/openkaios/bilibili_kaios/main/application.zip",
   "version": "1.8.2",
   "developer": {
     "name": "白羊座的一只狼/zixing/michael_eddy",
