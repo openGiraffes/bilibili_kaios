@@ -1,13 +1,9 @@
 {
-  "description": "哔哩哔哩KaiOS版",
+  "name": "哔哩哔哩",
+  "package_path": "http://192.168.123.182:5500/application.zip",
+  "version": "1.8.2",
   "developer": {
     "name": "白羊座的一只狼/zixing/michael_eddy",
     "url": "http://www.bilibili.com/"
-  },
-  "icons": {
-    "56": "https://cdn.jsdelivr.net/gh/openkaios/bilibili_kaios@main/application/img/icons/icon56x56.png",
-    "128": "https://cdn.jsdelivr.net/gh/openkaios/bilibili_kaios@main/application/img/icons/icon128x128.png"
-  },
-  "name": "哔哩哔哩",
-  "package_path": "https://git.yumenaka.net/https://github.com/openkaios/bilibili_kaios/releases/download/1.8.2/bilibili_kaios-omnisd-1.8.2.zip"
+  }
 }
