@@ -56,7 +56,7 @@ function handleKeydown(e) {
         case 'E':
         case 'Backspace':
         case 'SoftRight':
-            window.location.href = '../lives/index.html';
+            window.location.href = '../livelist/index.html';
             break;
     }
 }

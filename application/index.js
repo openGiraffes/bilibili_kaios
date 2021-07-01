@@ -307,7 +307,7 @@ function handleKeydown(e) {
             break;
           }
           case 2: {
-            window.location.href = './lives/index.html';
+            window.location.href = './livelist/index.html';
             break;
           }
           case 3: {
