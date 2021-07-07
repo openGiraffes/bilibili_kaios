@@ -246,9 +246,12 @@ function handleKeydown(e) {
 				if ($('#player').attr('class') == 'video_normal') {
 					document.documentElement.requestFullscreen();
 					$('#player').attr('class', 'video_fullscreen');
-				} else {
+					$('#palyercontainter>canvas').addClass('fullscreen');
+				}
+				else {
 					document.exitFullscreen();
 					$('#player').attr('class', 'video_normal');
+					$('#palyercontainter>canvas').removeClass('fullscreen');
 				}
 			}
 			else if ($('#softkey-left').text() === "下一页") {

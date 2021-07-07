@@ -145,9 +145,18 @@
   left: -40px;
 }
 
+#palyercontainter > canvas.fullscreen {
+  width: 320px;
+  height: 198px;
+  position: fixed !important;
+  transform: rotate(90deg);
+  top: 40px !important;
+  left: -40px !important;
+}
+
 #player {
   background-color: black;
-  z-index: 9999;
+  z-index: 98;
 }
 /* Soft Keys */
 #softkeys {
