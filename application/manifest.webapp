@@ -7,6 +7,8 @@
   "origin": "app://kai.baiyang.bilibili",
   "icons": {
     "56": "/img/icons/icon56x56.png",
+    "64": "/img/icons/icon64x64.png",
+    "112": "/img/icons/icon112x112.png",
     "128": "/img/icons/icon128x128.png"
   },
   "developer": {
