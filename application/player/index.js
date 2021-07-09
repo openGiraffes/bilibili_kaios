@@ -100,7 +100,8 @@ function getPlayUrl(part) {
 function getBangmiPlayUrl() {
 	var result = false;
 	try {
-		var url = 'https://bangumi.bilibili.com/player/web_api/v2/playurl?cid=' + cid + '&otype=json&type=&quality=' + qn + '&module=bangumi&season_type=' + season_type + '&qn=' + qn;
+		var url = 'https://bangumi.bilibili.com/player/web_api/v2/playurl?cid=' + cid + '&otype=json&type=&quality=' + qn + '&module=bangumi&season_type='
+			+ season_type + '&qn=' + qn;
 		var result = $.getApi(url, web);
 		if (result.result == 'suee') {
 			if (result.durl != null && result.durl.length > 0) {
@@ -150,7 +151,7 @@ function getComments(page) {
 	if (page) { }
 	else {
 		$('.items').empty();
-		$('.items').append('正在加载…')
+		$('.items').append('正在加载…');
 		commentpage = 1;
 		page = 1;
 	}
@@ -167,7 +168,7 @@ function getComments(page) {
 			return;
 		}
 		if (document.querySelectorAll('.itemcomment')[0]) {
-			document.querySelectorAll('.itemcomment')[0].focus()
+			document.querySelectorAll('.itemcomment')[0].focus();
 		}
 	}).fail(function (jqXHR, status, error) {
 		alert(error + ",请求可能被拦截");
@@ -196,9 +197,8 @@ function toggleFullScreen() {
 		document.documentElement.requestFullscreen();
 	}
 	else {
-		if (document.exitFullscreen) {
+		if (document.exitFullscreen)
 			document.exitFullscreen();
-		}
 	}
 }
 function handleKeydown(e) {
