@@ -2,7 +2,11 @@ $.extend({
     listen: function (id) {
         var ws = new WebSocket('wss://broadcastlv.chat.bilibili.com:2245/sub');
         ws.onopen = function () {
+            var uid = $.getData('mid');
+            if (uid == '')
+                uid = 1e14 + 2e14 * Math.random();
             ws.send(generatePacket(JSON.stringify({
+                uid: uid,
                 roomid: id
             }), 7));
         };
