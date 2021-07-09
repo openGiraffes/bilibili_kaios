@@ -10,6 +10,7 @@
   <script src="../lib/jquery.min.js"></script>
   <script src="../lib/jquery.cookie.min.js"></script>
   <script src="../lib/jsencrypt.min.js"></script>
+  <script src="../lib/pako.min.js"></script>
   <script src="../lib/danmaku.min.js"></script>
   <script src="../lib/md5.min.js"></script>
   <script src="../lib/flv.min.js"></script>
@@ -23,7 +24,9 @@
 </head>
 
 <body>
-  <video class="player" id="player" controls></video>
+  <div id="panel">
+    <video class="player" id="player" controls></video>
+  </div>
   <div class="tab">
     <ul>
       <li tabIndex="0" class="focus">简介</li>

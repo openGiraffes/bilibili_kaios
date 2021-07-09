@@ -191,3 +191,10 @@
   background-color: #d26585;
   color: white;
 }
+
+canvas {
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 99 !important;
+  position: fixed !important;
+}

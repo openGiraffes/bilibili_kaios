@@ -63,8 +63,10 @@ function playV(part) {
 					player.width = 240;
 					player.height = 150;
 					player.play();
-					if (danmaku == 1)
-						$.getDanmaku('palyercontainter', 'player', cid);
+					$.Async().then(function () {
+						if (danmaku == 1)
+							$.getDanmaku('palyercontainter', 'player', cid);
+					});
 				}
 			}
 			catch (err) {

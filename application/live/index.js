@@ -2,18 +2,22 @@ var thisRoomId = 0;
 var tab_location = 0;
 $(function () {
   document.activeElement.addEventListener('keydown', handleKeydown);
-  makeLive(getLiveRoomNumer($.getQueryVar('uid')));
-  $.listen(thisRoomId);
+  thisRoomId = getLiveRoomNumer($.getQueryVar('uid'));
+  makeLive(thisRoomId);
+  $.Async().then(function () {
+    var socket = new BiliSocket(thisRoomId);
+    socket.listen();
+    socket.draw('panel','player');
+  });
 });
 
 function makeLive(room_id) {
-  thisRoomId = room_id;
   $.getJSON('https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=' + room_id +
     '&qn=80&platform=web&protocol=0,1&format=0,2&codec=0,1&ptype=8', function (result) {
       if (result.code != 0) {
         alert('获取直播地址失败！');
         return;
-      };
+      }
       if (result.data.playurl_info) {
         var data = result.data.playurl_info.playurl.stream[0].format[0].codec[0];
         var url = data.url_info[0].host + data.base_url + data.url_info[0].extra;
@@ -35,7 +39,7 @@ function makeLive(room_id) {
       else {
         alert("直播不在进行中！");
       }
-    })
+    });
 }
 
 function setData(name, sign, title) {

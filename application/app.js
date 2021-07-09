@@ -12,6 +12,12 @@ const tv = {
     secret: '59b43e04ad6965f34319062b478f83dd'
 };
 $.extend({
+    Async: function () {
+        var task = new Promise(function (resolve) {
+            resolve();
+        });
+        return task;
+    },
     clearEvent: function (e) {
         try {
             var key = e.key;
