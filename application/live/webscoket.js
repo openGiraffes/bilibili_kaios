@@ -1,14 +1,18 @@
 class BiliSocket {
     constructor(id) {
+        this.danmaku = $.getData('danmaku');
+        if (this.danmaku == '') this.danmaku = 0;
         this.roomid = parseInt(id);
     }
     draw(rootElementId, elementId) {
-        window.danmaku = new Danmaku({
-            container: document.getElementById(rootElementId),
-            media: document.getElementById(elementId),
-            engine: 'canvas',
-            speed: 80
-        });
+        if (this.danmaku != 0) {
+            window.danmaku = new Danmaku({
+                container: document.getElementById(rootElementId),
+                media: document.getElementById(elementId),
+                engine: 'canvas',
+                speed: 80
+            });
+        }
     }
     server() {
         var url = 'https://api.live.bilibili.com/room/v1/Danmu/getConf?room_id=' + this.roomid;
@@ -22,7 +26,7 @@ class BiliSocket {
             return { token: '', host: 'broadcastlv.chat.bilibili.com', port: 2244 };
         }
     }
-    listen() {
+    listen(callback) {
         try {
             var classObj = this;
             var info = this.server();
@@ -43,38 +47,33 @@ class BiliSocket {
             ws.onmessage = function (event) {
                 try {
                     decode(event.data, function (packet) {
-                        switch (packet.op) {
-                            case 3:
-                                const count = packet.body.count
-                                //console.log(`人气：${count}`);
-                                break;
-                            case 5:
-                                packet.body.forEach((body) => {
-                                    switch (body.cmd) {
-                                        case 'DANMU_MSG': {
-                                            console.log(body.info[1])
+                        if (packet.op == 5) {
+                            packet.body.forEach((body) => {
+                                switch (body.cmd) {
+                                    case 'DANMU_MSG': {
+                                        var msg = body.info[1];
+                                        var ct = $.toDateTimeString(body.info[9].ts);
+                                        callback({
+                                            content: {
+                                                msg: msg,
+                                                time: ct,
+                                                user: body.info[2][1]
+                                            },
+                                            name: 'danmaku'
+                                        });
+                                        if (classObj.danmaku != 0) {
                                             window.danmaku.emit({
-                                                text: body.info[1],
+                                                text: msg,
                                                 style: {
                                                     font: '12px',
                                                     fillStyle: '#fff'
                                                 }
                                             });
-                                            break;
                                         }
-                                        case 'SEND_GIFT': {
-                                            var content = body.data.uname + body.data.action + '个' + body.data.giftName;
-
-                                            break;
-                                        }
-                                        case 'WELCOME': {
-                                            var content = '欢迎' + body.data.uname + '进入直播间';
-
-                                            break;
-                                        }
+                                        break;
                                     }
-                                })
-                                break;
+                                }
+                            });
                         }
                     });
                 }

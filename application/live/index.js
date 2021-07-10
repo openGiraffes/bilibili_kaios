@@ -6,10 +6,33 @@ $(function () {
   makeLive(thisRoomId);
   $.Async().then(function () {
     var socket = new BiliSocket(thisRoomId);
-    socket.listen();
-    socket.draw('panel','player');
+    socket.draw('panel', 'player');
+    socket.listen(listenCallback);
   });
 });
+
+function listenCallback(obj) {
+  switch (obj.name) {
+    case 'danmaku': {
+      var uname = obj.content.user;
+      var content = obj.content.msg;
+      var ctime = obj.content.time;
+      commentIndex++;
+      var html = '<div class="itemcomment" tabIndex="' + commentIndex + '"><div class="commenthead"> <div class="user-info"><p>' + uname
+        + '</p><span>' + ctime + '</span></div> </div> <div class="comment"> <p>' + content + '</p></div></div>';
+      $('.items').prepend(html);
+
+      const items = document.querySelectorAll('.itemcomment');
+      const targetElement = items[0];
+      if (targetElement) {
+        targetElement.focus();
+        targetElement.scrollIntoView(true);
+        $('.items').scrollTop(0);
+      }
+      break;
+    }
+  }
+}
 
 function makeLive(room_id) {
   $.getJSON('https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=' + room_id +
@@ -78,8 +101,9 @@ function tab(move) {
     load();
   }
 }
-
+var commentIndex = 0;
 function appendComments(item, tabIndex) {
+  commentIndex = tabIndex;
   var content = item.text;
   var uname = item.nickname;
   var ctime = item.timeline;
@@ -88,9 +112,7 @@ function appendComments(item, tabIndex) {
 }
 
 function getComments(page) {
-  if (page) {
-
-  }
+  if (page) { }
   else {
     $('.items').empty();
     $('.items').append('正在加载…');
@@ -102,8 +124,8 @@ function getComments(page) {
     if (result.data.room) {
       $('.items').empty();
       $.each(result.data.room.reverse(), function (r, item) {
-        appendComments(item, r + '');
-      })
+        appendComments(item, r);
+      });
     }
     else {
       alert("没有获取到更多弹幕！");
