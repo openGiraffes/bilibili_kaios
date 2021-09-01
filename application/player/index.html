@@ -21,11 +21,9 @@
 </head>
 
 <body>
-  <!--播放器-->
   <div id='palyercontainter'>
     <video id="player" class="video_normal" controls referrerpolicy="never"></video>
   </div>
-  <!--导航栏-->
   <div class="tab">
     <ul>
       <li tabIndex="0" class="focus">简介</li>
@@ -33,9 +31,7 @@
       <li tabIndex="2" id="comments">评论</li>
     </ul>
   </div>
-  <!--视频信息（弹幕、播放、三连等）-->
   <div class="items">
-    <!--标题、播放、弹幕量-->
     <div class="item" id="title" tabIndex="0">
       <a id="title">标题加载中</a>
       <br>
@@ -50,7 +46,6 @@
         </div>
       </div>
     </div>
-    <!--点赞、投币、收藏-->
     <div class="item" id="sanlian" tabIndex="1">
       <div id="like">
         <img src="../img/inside_icon/play/like.svg">
@@ -70,7 +65,6 @@
     <div class="item" tabIndex="4"></div>
   </div>
   <div class="pages" style="display: none;"></div>
-  <!--导航键-->
   <footer id="softkeys">
     <div id="softkey-left">全屏</div>
     <div id="softkey-center">暂停</div>

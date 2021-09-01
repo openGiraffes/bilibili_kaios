@@ -1,11 +1,11 @@
 var thisRef = {};
 var thisrefLiveIndex = 0, lastSearchIndex = 0, day = 3, nowpage = 1, lastHotIndex = 0;
 var lastliveIndex = 0, lastmoreIndex = 0, isshowmenu = 0, lastindex = 0, searchPage = 1, tab_location = 1;
-var lastl = "", lastm = "", lastr = "", nowuserid = "", searchdata = "";
+var lastl = "", lastm = "", lastr = "",  searchdata = "";
 var ajax = null;
 var roominfourl = "https://api.live.bilibili.com/room/v1/Room/getRoomInfoOld?mid=";
 var setCookieUrl = "https://data.bilibili.com/v/web/web_page_view";
-var menu = ["用户"];
+var menu = ["用户", "设置", "退出"];
 $(function () {
   document.activeElement.addEventListener("keydown", handleKeydown);
   thisRef = $.getQueryVar("ref");
@@ -16,7 +16,6 @@ $(function () {
     thisRef = {
       tab_location: tab_location,
       tabIndex: document.activeElement.tabIndex,
-      nowuserid: nowuserid,
       nowpage: nowpage,
       searchdata: searchdata,
       searchPage: searchPage,
@@ -25,7 +24,6 @@ $(function () {
   tab_location = thisRef.tab_location;
   lastHotIndex = thisRef.tabIndex;
   nowpage = thisRef.nowpage;
-  nowuserid = thisRef.nowuserid;
   thisrefLiveIndex = thisRef.tabIndex;
   lastSearchIndex = thisRef.tabIndex;
   load();
@@ -89,7 +87,6 @@ function openV() {
     var ref = {
       tab_location: tab_location,
       tabIndex: document.activeElement.tabIndex,
-      nowuserid: nowuserid,
       nowpage: nowpage,
       searchdata: searchdata,
       searchPage: searchPage,
@@ -243,7 +240,7 @@ function handleKeydown(e) {
       break;
     case "Q":
     case "SoftLeft":
-      if (tab_location != 4)
+      if (tab_location != 3)
         refresh();
       else {
         var item = $(".item.select").attr("tabIndex");
@@ -324,25 +321,15 @@ function tab(move) {
     return;
   }
   var currentIndex = parseInt($(".focus").attr("tabIndex"));
-  if (currentIndex === 2) {
-    thisRef.tabIndex = document.activeElement.tabIndex;
-  }
-  else if (currentIndex === 1) {
+  if (currentIndex === 1) 
     lastHotIndex = document.activeElement.tabIndex;
-  }
-  else if (currentIndex === 3) {
+  else if (currentIndex === 2) 
     lastliveIndex = document.activeElement.tabIndex;
-  }
-  else if (currentIndex === 4) {
-    lastmoreIndex = document.activeElement.tabIndex;
-  }
   var next = currentIndex + move;
-  if (next > 4) {
+  if (next > 3) 
     next = 0;
-  }
-  if (next < 0) {
-    next = 4;
-  }
+  if (next < 0) 
+    next = 3;
   var items = document.querySelectorAll("li");
   var targetElement = items[next];
   if (targetElement != undefined) {
@@ -400,12 +387,12 @@ function load() {
       }
       break;
     }
-    case 3: {
+    case 2: {
       getZList();
       softkey("刷新", "观看", "选项");
       break;
     }
-    case 4: {
+    case 3: {
       $(".items").empty();
       var rows =
         '<div tabIndex="0" class="item small">番剧</div>' +
@@ -565,7 +552,7 @@ function refresh(ignoremenu) {
     case 1:
       load();
       break;
-    case 3:
+    case 2:
       refreshLive();
       load();
       break;
@@ -595,7 +582,7 @@ function enter() {
       lastHotIndex = currentIndex;
       openV();
       break;
-    case 3:
+    case 2:
       var currentIndex = document.activeElement.tabIndex;
       if (currentIndex < 0) {
         alert("请选择一个直播再进行观看！");
@@ -604,16 +591,11 @@ function enter() {
       var ref = {
         tab_location: tab_location,
         tabIndex: document.activeElement.tabIndex,
-        nowuserid: nowuserid,
         nowpage: nowpage,
         searchdata: searchdata,
         searchPage: searchPage,
       };
-      var link =
-        "./live/index.html?uid=" +
-        $(document.querySelectorAll(".item")[currentIndex]).data("uid") +
-        "&ref=" +
-        escape(JSON.stringify(ref));
+      var link = "./live/index.html?uid=" + $(document.querySelectorAll(".item")[currentIndex]).data("uid") + "&ref=" + escape(JSON.stringify(ref));
       window.location.href = link;
       break;
   }
@@ -621,9 +603,8 @@ function enter() {
 
 function setLastindex() {
   lastindex = document.activeElement.tabIndex;
-  if (lastindex < 0) {
+  if (lastindex < 0)
     lastindex = 0;
-  }
 }
 
 function showhideMenu(menu) {
@@ -634,9 +615,8 @@ function showhideMenu(menu) {
     lastm = $("#softkey-center").text();
     lastr = $("#softkey-right").text();
     var str = "";
-    for (var i = 0; i < menu.length; i++) {
+    for (var i = 0; i < menu.length; i++)
       str += '<li class="menuitem" tabIndex="' + i + '">' + menu[i] + "</li>";
-    }
     $.getById("menucontainer").innerHTML = str;
     var items = document.querySelectorAll(".menuitem");
     items[0].focus();
@@ -667,6 +647,14 @@ function selectMenu() {
     var menuname = $(item).text();
     switch (menuname) {
       case "用户":
+        window.location.href = "./user/index.html";
+        break;
+      case "设置":
+        window.location.href = "./setting/index.html";
+        break;
+      case "退出":
+        if (confirm('是否退出？'))
+          window.close();
         break;
     }
   }
@@ -679,15 +667,13 @@ function SoftRight() {
       searchData();
       break;
     case 1:
-      if (day === 3) {
+      if (day === 3)
         day = 7;
-        load();
-      } else if (day === 7) {
+      else if (day === 7)
         day = 3;
-        load();
-      }
+      load();
       break;
-    case 3:
+    default:
       showhideMenu(menu);
       break;
   }
