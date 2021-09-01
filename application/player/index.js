@@ -21,7 +21,8 @@ $(function () {
 	getInfo();
 	getIsLike();
 });
-function playVideo(url, type) {
+function playVideo(url, type, position) {
+	console.log(111)
 	if (typeof player !== "undefined") {
 		if (player != null) {
 			player.unload();
@@ -36,7 +37,13 @@ function playVideo(url, type) {
 		url: url
 	});
 	player.attachMediaElement(document.getElementById('player'));
+	player.on('error', function () {
+		var t = this.currentTime;
+		playVideo(url, type, t);
+	});
 	player.load();
+	if (typeof position !== 'undefined')
+		player.currentTime = position;
 	player.play();
 }
 function openV() {

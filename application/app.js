@@ -18,6 +18,9 @@ $.extend({
         });
         return task;
     },
+    getById: function (id) {
+        return document.getElementById(id);
+    },
     clearEvent: function (e) {
         try {
             var key = e.key;

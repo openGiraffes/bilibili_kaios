@@ -1,14 +1,19 @@
 <html>
 
 <head>
-    <!--链接样式-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="./index.css" />
     <link rel="stylesheet" type="text/css" href="./lib/common.css" />
     <link rel="manifest" href="/manifest.webapp">
-    <!--设置标题-->
     <title>凯哔哩</title>
+    <script src="./lib/jquery.min.js"></script>
+    <script src="./lib/jquery.cookie.min.js"></script>
+    <script src="./lib/md5.min.js"></script>
+    <script src="./lib/jsencrypt.min.js"></script>
+    <script src="./lib/loading.js"></script>
+    <script src="./app.js"></script>
+    <script src="./index.js"></script>
 </head>
 
 <body>
@@ -16,20 +21,18 @@
         <ul>
             <li tabIndex="0">搜索</li>
             <li tabIndex="1" class="focus">热门</li>
-            <li tabIndex="2">关注</li>
-            <li tabIndex="3">直播</li>
-            <li tabIndex="4">分区</li>
+            <li tabIndex="2">直播</li>
+            <li tabIndex="3">分区</li>
         </ul>
     </div>
     <div class="items">
-        <!--这里将会充满项目-->
     </div>
+    
     <div id="menu">
         <ul id="menucontainer">
-            <li class="menuitem"> 菜单1 </li>
+            <li class="menuitem"></li>
         </ul>
     </div>
-    <!--导航键-->
     <footer id="softkeys">
         <div id="softkey-left">刷新</div>
         <div id="softkey-center">播放</div>
@@ -38,11 +41,3 @@
 </body>
 
 </html>
-<!--链接JavaSript-->
-<script src="./lib/jquery.min.js"></script>
-<script src="./lib/jquery.cookie.min.js"></script>
-<script src="./lib/md5.min.js"></script>
-<script src="./lib/jsencrypt.min.js"></script>
-<script src="./lib/loading.js"></script>
-<script src="./app.js"></script>
-<script src="./index.js"></script>

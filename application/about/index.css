@@ -1,0 +1,46 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+#softkeys {
+  z-index: 100;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background: #dadada;
+  padding: 3px 5px;
+}
+
+#softkeys > * {
+  display: inline-block;
+  width: 72px;
+  padding: 0 5px;
+}
+
+#softkey-left,
+#softkey-right {
+  font-weight: 400;
+  font-size: 14px;
+  color: #323232;
+}
+
+#softkey-right {
+  text-align: right;
+}
+
+#softkey-center {
+  font-weight: 600;
+  font-size: 16px;
+  width: 76px;
+  color: #323232;
+  text-align: center;
+}
+
+.content {
+  font-size: 14px;
+  padding: 8px;
+}
