@@ -22,7 +22,6 @@ $(function () {
 	getIsLike();
 });
 function playVideo(url, type, position) {
-	console.log(111)
 	if (typeof player !== "undefined") {
 		if (player != null) {
 			player.unload();
@@ -109,12 +108,13 @@ function getPlayUrl(part) {
 function getBangmiPlayUrl() {
 	var result = false;
 	try {
-		var url = 'https://bangumi.bilibili.com/player/web_api/v2/playurl?cid=' + cid + '&otype=json&type=&quality=' + qn + '&module=bangumi&season_type='
+		var url = 'https://api.bilibili.com/pgc/player/web/playurl?cid=' + cid + '&otype=json&type=&quality=' + qn + '&module=bangumi&season_type='
 			+ season_type + '&qn=' + qn;
 		var result = $.getApi(url, web);
-		if (result.result == 'suee') {
-			if (result.durl != null && result.durl.length > 0) {
-				var url = result.durl[0].url;
+		if (result.code == 0) {
+			if (result.result.durl != null && result.result.durl.length > 0) {
+				var url = result.result.durl[0].url;
+				console.log(url)
 				var type = 'flv';
 				if (url.indexOf('flv') == -1)
 					type = 'mp4';
