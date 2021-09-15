@@ -1,7 +1,7 @@
 {
-  "name": "哔哩哔哩",
-  "description": "哔哩哔哩KaiOS版",
-  "version": "1.8.4",
+  "name": "BiliBili",
+  "description": "BiliBili client for KaiOS",
+  "version": "1.8.5",
   "launch_path": "/index.html",
   "type": "privileged",
   "origin": "app://kai.baiyang.bilibili",
@@ -12,8 +12,8 @@
     "128": "/img/icons/icon128x128.png"
   },
   "developer": {
-    "name": "白羊座的一只狼/zixing/michael_eddy",
-    "url": "http://www.bilibili.com/"
+    "name": "openGiraffes Group",
+    "url": "https://opengiraffes.top/"
   },
   "permissions": {
     "attention": {},
@@ -22,5 +22,12 @@
     "systemXHR": {}
   },
   "ime_default_softkey_bar": true,
-  "theme_color": "#d26585"
+  "theme_color": "#d26585",
+  "locales": {
+    "zh-CN": {
+      "name": "哔哩哔哩",
+      "description": "哔哩哔哩KaiOS版"
+    }
+  },
+  "default_locale": "zh-CN"
 }

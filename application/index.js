@@ -277,7 +277,7 @@ function handleKeydown(e) {
     case "SoftRight":
       SoftRight();
       break;
-    case "#":
+    case "0":
       window.location.href = "./about/index.html";
       break;
   }
