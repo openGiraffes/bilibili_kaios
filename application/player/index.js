@@ -20,6 +20,9 @@ $(function () {
 	}
 	getInfo();
 	getIsLike();
+	window.addEventListener('error', function (error) {
+		console.log(error);
+	});
 });
 function playVideo(url, type, position) {
 	if (typeof player !== "undefined") {
@@ -35,11 +38,11 @@ function playVideo(url, type, position) {
 		isLive: false,
 		url: url
 	});
-	player.attachMediaElement(document.getElementById('player'));
-	player.on('error', function () {
+	player.on(flvjs.Events.ERROR, function () {
 		var t = this.currentTime;
 		playVideo(url, type, t);
 	});
+	player.attachMediaElement(document.getElementById('player'));
 	player.load();
 	if (typeof position !== 'undefined')
 		player.currentTime = position;
