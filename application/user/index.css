@@ -101,11 +101,6 @@ p {
   color: white;
 }
 
-p > input {
-  height: 24px;
-  line-height: 24px;
-}
-
 #face {
   margin-top: 8px;
 }

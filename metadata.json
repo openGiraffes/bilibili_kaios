@@ -1,1 +1,4 @@
-{"manifestURL":"app://kai.baiyang.bilibili/manifest.webapp","version":1}
+{
+    "version": 2,
+    "manifestURL": "app://kai.baiyang.bilibili/manifest.webapp"
+}

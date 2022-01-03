@@ -1,0 +1,52 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/common.css" />
+    <title>凯哔哩-登录</title>
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/jquery.cookie.min.js"></script>
+    <script src="../lib/md5.min.js"></script>
+    <script src="../lib/jsencrypt.min.js"></script>
+    <script src="../lib/loading.js"></script>
+    <script src="../lib/gt.js"></script>
+    <script src="../app.js"></script>
+    <script src="./index.js"></script>
+</head>
+
+<body>
+    <div id="passwd">
+        <p>
+            <label>账号</label>
+            <input id="name" class="item" type="text" />
+        </p>
+        <p>
+            <label>密码</label>
+            <input id="pwd" class="item" type="password" />
+        </p>
+    </div>
+    <div id="sms">
+        <p>
+            <label>手机号</label>
+            <input id="phone" class="item2" type="tel" maxlength="11" />
+        </p>
+        <div id="captcha" class="item2">
+            <input id="validate" type="hidden" />
+            <input id="seccode" type="hidden" />
+        </div>
+        <p>
+            <label>验证码</label>
+            <input id="code" class="item2" type="tel" maxlength="6" />
+        </p>
+    </div>
+</body>
+
+<footer id="softkeys">
+    <div id="softkey-left">登录</div>
+    <div id="softkey-center">验证码</div>
+    <div id="softkey-right">返回</div>
+</footer>
+
+</html>

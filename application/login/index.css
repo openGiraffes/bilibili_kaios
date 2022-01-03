@@ -1,0 +1,63 @@
+* {
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
+
+#softkeys {
+  z-index: 100;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background: #dadada;
+  padding: 3px 5px;
+}
+
+#softkeys > * {
+  display: inline-block;
+  width: 72px;
+  padding: 0 5px;
+}
+
+#softkey-left,
+#softkey-right {
+  font-weight: 400;
+  font-size: 14px;
+  color: #323232;
+  line-height: 24px;
+  text-align: left;
+}
+
+#softkey-right {
+  text-align: right;
+  line-height: 24px;
+}
+
+#softkey-center {
+  font-weight: 600;
+  font-size: 16px;
+  width: 76px;
+  color: #323232;
+  text-align: center;
+}
+
+p {
+  padding: 6px;
+  margin: 0;
+}
+
+p > input[type="tel"],
+p > input[type="text"],
+p > input[type="password"] {
+  height: 24px;
+  line-height: 24px;
+}
+
+.item.select,
+.item2.select {
+  background-color: #d26585;
+  color: white;
+}

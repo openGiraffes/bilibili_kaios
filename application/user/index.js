@@ -11,7 +11,7 @@ $(function () {
         }
         else {
             $('#softkey-left').text('登录');
-            $(".login").show();
+            $(".none").show();
             $(".info").hide();
         }
     }
@@ -40,7 +40,7 @@ function handleKeydown(e) {
         case 'SoftLeft':
             if (!isOpen) {
                 if (userId == 0)
-                    login();
+                    window.location.href = '../login/index.html';
                 else
                     logout();
             }
@@ -79,6 +79,34 @@ function navigate() {
     }
 }
 
+function setUserInfo() {
+    var userInfo = null;
+    if (self)
+        userInfo = $.getData('userInfo');
+    if (typeof userInfo == 'undefined' || userInfo == null || userInfo == '') {
+        var url = 'https://app.bilibili.com/x/v2/space?ps=10&vmid=' + userId;
+        var result = $.getApi(url);
+        userInfo = JSON.stringify(result);
+    }
+    var info = JSON.parse(userInfo);
+    if (info != null) {
+        $('#face').attr('src', info.data.card.face);
+        $('#uid').text('UID ' + info.data.card.mid);
+        $('#uname').text(info.data.card.name);
+        $('#exp').text('经验 ' + info.data.card.level_info.current_exp + ' / ' + info.data.card.level_info.next_exp);
+        $('#lv').text('LV ' + info.data.card.level_info.current_level);
+        $('#focus').text(' 关注 ' + info.data.card.attention);
+        $('#fans').text(' 粉丝 ' + info.data.card.fans);
+        $('#sign').text(info.data.card.sign);
+    }
+    if (self) {
+        localStorage.setItem('userInfo', userInfo);
+        $('#softkey-left').text('注销');
+    }
+    $(".none").hide();
+    $(".info").show();
+}
+
 function showhideMenu() {
     if (isOpen) {
         $("#menu").hide();
@@ -107,7 +135,7 @@ function softkey(left, center, right) {
 function logout() {
     userId = 0;
     $(".info").hide();
-    $(".login").show();
+    $(".none").show();
     $('#softkey-left').text('登录');
     localStorage.removeItem('mid');
     localStorage.removeItem('access_token');
@@ -152,79 +180,4 @@ function nav(move) {
             $(targetElement).addClass('select');
         }
     }
-}
-
-function login() {
-    //var username = $('#name').val();
-    //var pwd = $('#pwd').val();
-    var username = document.getElementById('name').value;
-    var pwd = document.getElementById('pwd').value;
-    if (username == '' || pwd == '') {
-        alert('账号或者密码不能为空！');
-    }
-    else {
-        var passwd = encryptedPwd(pwd);
-        var content = 'username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(passwd) + '&gee_type=10';
-        var data = $.postApi('https://passport.bilibili.com/api/v3/oauth2/login', content, tv);
-        if (data.code == 0) {
-            var token = data.data.token_info;
-            userId = token.mid;
-            localStorage.setItem('mid', token.mid);
-            localStorage.setItem('access_token', token.access_token);
-            localStorage.setItem('refresh_token', token.refresh_token);
-            localStorage.setItem('expires_in', (token.expires_in + $.getTs()));
-            alert('登录成功！');
-            setUserInfo();
-        }
-        else {
-            alert('登录失败！' + data.message);
-        }
-    }
-}
-
-function setUserInfo() {
-    var userInfo = null;
-    if (self)
-        userInfo = $.getData('userInfo');
-    if (typeof userInfo == 'undefined' || userInfo == null || userInfo == '') {
-        var url = 'https://app.bilibili.com/x/v2/space?ps=10&vmid=' + userId;
-        var result = $.getApi(url);
-        userInfo = JSON.stringify(result);
-    }
-    var info = JSON.parse(userInfo);
-    if (info != null) {
-        $('#face').attr('src', info.data.card.face);
-        $('#uid').text('UID ' + info.data.card.mid);
-        $('#uname').text(info.data.card.name);
-        $('#exp').text('经验 ' + info.data.card.level_info.current_exp + ' / ' + info.data.card.level_info.next_exp);
-        $('#lv').text('LV ' + info.data.card.level_info.current_level);
-        $('#focus').text(' 关注 ' + info.data.card.attention);
-        $('#fans').text(' 粉丝 ' + info.data.card.fans);
-        $('#sign').text(info.data.card.sign);
-    }
-    if (self) {
-        localStorage.setItem('userInfo', userInfo);
-        $('#softkey-left').text('注销');
-    }
-    $(".login").hide();
-    $(".info").show();
-}
-
-function encryptedPwd(pwd) {
-    var encrypted = pwd;
-    var data = $.postApi("https://passport.bilibili.com/api/oauth2/getKey", '', android);
-    if (data != null && data.code == 0) {
-        var key = data.data.key;
-        var hash = data.data.hash;
-        key = key.replace(/\n/g, '').replace('-----BEGIN PUBLIC KEY-----', '').replace('-----END PUBLIC KEY-----', '');
-        var decrypt = new JSEncrypt();
-        decrypt.setPublicKey(key);
-        var hashPass = hash.concat(pwd);
-        encrypted = decrypt.encrypt(hashPass);
-        if (typeof encrypted == 'boolean' && encrypted == false) {
-            //加密失败，放弃挣扎吧
-            encrypted = pwd;
-        }
-    }
-    return encrypted;
 }
