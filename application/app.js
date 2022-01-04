@@ -13,22 +13,32 @@ const tv = {
 };
 $.extend({
     addScript: function (remoteUrl, loadCallback, errorCalllback) {
+		
         window.URL = window.URL || window.webkitURL;
         var request = new XMLHttpRequest({ mozSystem: true });
-        request.open("GET", remoteUrl);
-        request.addEventListener("load", function () {
-            var head = document.getElementsByTagName("head")[0];
-            var blob = new Blob([request.textContent], { type: 'text/javascript' });
-            var script = document.createElement('script');
-            script.src = window.URL.createObjectURL(blob);
-            script.onload = script.onreadystatechange = function () {
-                loadCallback();
-            };
-            script.onerror = function () {
-                errorCalllback();
-            };
-            head.appendChild(script);
-        });
+		
+		request.onreadystatechange = function() {  
+				if (request.readyState === 4) {
+					if (request.status === 200) {  
+						var head = document.getElementsByTagName("head")[0];
+						alert(request.responseText);
+						var blob = new Blob([request.responseText], { type: 'text/javascript' });
+						var script = document.createElement('script');
+						
+						script.src = window.URL.createObjectURL(blob);
+						script.onload = script.onreadystatechange = function () {
+							loadCallback();
+						};
+						script.onerror = function () {
+							errorCalllback();
+						};
+						//alert(script);
+						head.appendChild(script);
+				}
+			}
+		}
+        request.open("GET", remoteUrl); 
+		request.send("");
     },
     Async: function () {
         var task = new Promise(function (resolve) {
