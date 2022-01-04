@@ -108,32 +108,14 @@
         return parseInt(Math.random() * 10000) + (new Date()).valueOf();
     };
     var loadScript = function (url, cb) {
-        var script = document.createElement("script");
-        script.async = true;
-        script.charset = "UTF-8";
-        script.type = 'text/javascript';
-        if (/static\.geetest\.com/g.test(url)) {
-            script.crossOrigin = "anonymous";
-        }
-        script.onerror = function () {
-            cb(true);
-        };
         var loaded = false;
-        script.onload = script.onreadystatechange = function () {
-            if (!loaded &&
-                (!script.readyState ||
-                    "loaded" === script.readyState ||
-                    "complete" === script.readyState)) {
-
+        $.addScript(url, function () {
+            if (!loaded && (!script.readyState || "loaded" === script.readyState || "complete" === script.readyState)) {
                 loaded = true;
-                setTimeout(function () {
-                    cb(false);
-                }, 0);
+                setTimeout(function () { cb(false); }, 0);
             }
-        };
-        script.src = url;
-        head.appendChild(script);
-    };
+        }, function () { cb(true); });
+    }
     var normalizeDomain = function (domain) {
         return domain.replace(/^https?:\/\/|\/$/g, '');
     };

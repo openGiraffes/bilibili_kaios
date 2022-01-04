@@ -12,6 +12,24 @@ const tv = {
     secret: '59b43e04ad6965f34319062b478f83dd'
 };
 $.extend({
+    addScript: function (remoteUrl, loadCallback, errorCalllback) {
+        window.URL = window.URL || window.webkitURL;
+        var request = new XMLHttpRequest({ mozSystem: true });
+        request.open("GET", remoteUrl);
+        request.addEventListener("load", function () {
+            var head = document.getElementsByTagName("head")[0];
+            var blob = new Blob([request.textContent], { type: 'text/javascript' });
+            var script = document.createElement('script');
+            script.src = window.URL.createObjectURL(blob);
+            script.onload = script.onreadystatechange = function () {
+                loadCallback();
+            };
+            script.onerror = function () {
+                errorCalllback();
+            };
+            head.appendChild(script);
+        });
+    },
     Async: function () {
         var task = new Promise(function (resolve) {
             resolve();
