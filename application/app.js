@@ -42,7 +42,14 @@ $.extend({
     clearEvent: function (e) {
         try {
             var key = e.key;
-            if (key != "EndCall" && key.toLowerCase().indexOf('arrow') == -1)
+			var num = -1;
+			try{
+				num = parseInt(key,10);
+			}
+			catch (e) {
+				console.log(e);
+			}
+            if ( num == -1 && key != "EndCall" && key.toLowerCase().indexOf('arrow') == -1)
                 e.preventDefault();
         }
         catch (e) {
