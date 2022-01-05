@@ -13,15 +13,13 @@ const tv = {
 };
 $.extend({
     addScript: function (remoteUrl, loadCallback, errorCalllback) {
-		
         window.URL = window.URL || window.webkitURL;
-        var request = new XMLHttpRequest({ mozSystem: true });
-		
+        var request = new XMLHttpRequest({ mozSystem: true });		
 		request.onreadystatechange = function() {  
 				if (request.readyState === 4) {
 					if (request.status === 200) {  
 						var head = document.getElementsByTagName("head")[0];
-						alert(request.responseText);
+						console(request.responseText);
 						var blob = new Blob([request.responseText], { type: 'text/javascript' });
 						var script = document.createElement('script');
 						
@@ -31,8 +29,7 @@ $.extend({
 						};
 						script.onerror = function () {
 							errorCalllback();
-						};
-						//alert(script);
+						};E
 						head.appendChild(script);
 				}
 			}

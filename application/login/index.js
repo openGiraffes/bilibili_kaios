@@ -33,12 +33,14 @@ function handleKeydown(e) {
                     sms = false;
                     $('#sms').hide();
                     $('#passwd').show();
+                    $('#softkey-center').text('验证码');
                 }
             }
             else {
                 sms = true;
                 $('#sms').show();
                 $('#passwd').hide();
+                $('#softkey-center').text('密码');
                 gtInit();
             }
             break;
@@ -70,7 +72,15 @@ function gtInit() {
                 else {
                     var seccode = result.geetest_seccode;
                     var validate = result.geetest_validate;
-
+                    var phone = document.getElementById('phone').value;
+                    var content = 'tel=' + phone + '&cid=1&token={token.Gt}&challenge={token.Challenge}&validate=' + validate + '&seccode=' + seccode;
+                    var data = $.postApi("http://passport.bilibili.com/x/passport-login/web/sms/send", content);
+                    if (data.code == 0) {
+                        alert('获取验证码成功！');
+                    }
+                    else {
+                        alert('获取验证码失败！' + data.message);
+                    }
                 }
             });
         });
@@ -82,7 +92,21 @@ function gtInit() {
 
 function login() {
     if (sms) {
+        var phone = document.getElementById('phone').value;
+        var code = document.getElementById('code').value;
+        if (phone == '' || code == '') {
+            alert('手机号或者验证码不能为空！');
+        }
+        else {
+            var content = 'cid=1&tel=' + phone + '&smsCode=' + code;
+            var data = $.postApi('http://passport.bilibili.com/web/login/rapid', content);
+            if (data.code == 0 && data.data.status == 0) {
 
+            }
+            else {
+                alert('登录失败！' + data.message);
+            }
+        }
     }
     else {
         var username = document.getElementById('name').value;
