@@ -451,25 +451,35 @@ function searchData() {
     searchdata +
     "&search_type=video&page=" +
     searchPage;
-  ajax = $.getJSON(searchurl, function (result) {
-    if (result.data.result) {
-      $(".items").empty();
-      $.each(result.data.result, function (r, item) {
-        if (item.pic.substr(0, 2) == "//") {
-          item.pic = "http:" + item.pic;
+
+  $.ajax({
+    url: searchurl,
+    type: "GET",
+    beforeSend: function (request) {
+      request.setRequestHeader("cookie", "buvid3=qwerty")
+    },
+    success: function (result) {
+      if (result.data.result) {
+        $(".items").empty();
+        $.each(result.data.result, function (r, item) {
+          if (item.pic.substr(0, 2) == "//") {
+            item.pic = "http:" + item.pic;
+          }
+          appendV(item, r + "");
+        });
+        if (document.querySelectorAll(".item")[lastSearchIndex]) {
+          document.querySelectorAll(".item")[lastSearchIndex].focus();
+          lastSearchIndex = 0;
+        } else {
+          document.querySelectorAll(".item")[0].focus();
         }
-        appendV(item, r + "");
-      });
-      if (document.querySelectorAll(".item")[lastSearchIndex]) {
-        document.querySelectorAll(".item")[lastSearchIndex].focus();
-        lastSearchIndex = 0;
       } else {
-        document.querySelectorAll(".item")[0].focus();
+        alert("没有更多内容");
       }
-    } else {
-      alert("没有更多内容");
-    }
-  });
+    },
+    error: function () {},
+    complete: function () {}
+  })
 }
 
 function refreshLive() {
