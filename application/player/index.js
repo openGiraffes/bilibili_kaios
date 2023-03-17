@@ -554,6 +554,11 @@ function enter() {
 }
 function getIsLike(uid) {
 	var result = localStorage.getItem('like')
+	if(!result)
+	{
+		result=[]
+		localStorage.setItem('like', "[]")
+	}
 	try {
 		result = JSON.parse(result)
 	} catch (e) {
