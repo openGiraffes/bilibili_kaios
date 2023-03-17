@@ -1,5 +1,79 @@
 let userId = 0;
 let isOpen = false, self = false;
+
+let urlQrCode = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-fe-header"
+//urlQrCode = "http://passport.bilibili.com/qrcode/getLoginUrl"
+urlQrCode = 'https://passport.bilibili.com/x/passport-tv-login/qrcode/auth_code'
+var intervalCheck = null;
+let qrcode_key = ""
+let qrUrl = ""
+function loadLoginQrCode()
+{  
+    if(intervalCheck)
+    {
+        clearInterval(intervalCheck)
+    }
+    var data = $.postApi(urlQrCode,'local_id=0',tv); 
+    if(data.code!=0)
+    {
+        alert(data.message)
+        return;
+    }
+    var url = data.data.url
+    //qrcode_key = data.data.qrcode_key
+    qrcode_key = data.data.auth_code
+    document.getElementById('qrcodeimg').innerHTML=''
+    new QRCode('qrcodeimg', {
+        text: url,
+        width: 200,
+        height: 200,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H //纠错等级
+    }); 
+    $.golbalhideLoading = true;
+    intervalCheck = setInterval(function(){
+        var urlPoll="https://passport.bilibili.com/x/passport-login/web/qrcode/poll?qrcode_key="+qrcode_key+"&source=main-fe-header"
+        //var urlPoll = 'http://passport.bilibili.com/qrcode/getLoginInfo'
+        urlPoll='https://passport.bilibili.com/x/passport-tv-login/qrcode/poll'
+        var dataPoll = $.postApi(urlPoll,'local_id=0&auth_code='+qrcode_key,tv); 
+
+        //var dataPoll = $.postApi(urlPoll,"oauthKey="+qrcode_key); 
+        console.log(dataPoll)
+        var code = dataPoll.code
+        if (code == 0) {
+            clearInterval(intervalCheck)
+            $.golbalhideLoading = false;
+            var token = dataPoll.data.token_info;
+            userId = token.mid;
+            localStorage.setItem('mid', token.mid);
+            localStorage.setItem('access_token', token.access_token);
+            localStorage.setItem('refresh_token', token.refresh_token);
+            localStorage.setItem('expires_in', (token.expires_in + $.getTs()));
+            alert('登录成功！');
+            setUserInfo();
+        }
+        else if(code==86090)
+        {
+            $('#logintips').text("请点击登录");
+        }
+        else if(code==86101 || code==86039){ 
+            $('#logintips').text("请使用哔哩app扫码登录"); 
+        }
+        else if(code == 86038)
+        {
+            clearInterval(intervalCheck)
+            $.golbalhideLoading = false;
+            //loadLoginQrCode()
+        } 
+        else {
+            alert('登录失败！' + dataPoll.message);
+            clearInterval(intervalCheck)
+            $.golbalhideLoading = false;
+        }
+    },1000)
+}
+
 $(function () {
     var mid = $.getQueryVar('mid');
     if (mid === false) {
@@ -10,9 +84,10 @@ $(function () {
             setUserInfo();
         }
         else {
-            $('#softkey-left').text('登录');
+            $('#softkey-left').text('刷新');
             $(".login").show();
             $(".info").hide();
+            loadLoginQrCode();
         }
     }
     else {
@@ -40,7 +115,8 @@ function handleKeydown(e) {
         case 'SoftLeft':
             if (!isOpen) {
                 if (userId == 0)
-                    login();
+                    loadLoginQrCode();
+                    //login();
                 else
                     logout();
             }
@@ -82,7 +158,7 @@ function navigate() {
 function showhideMenu() {
     if (isOpen) {
         $("#menu").hide();
-        softkey("登录", "主页", "选项");
+        softkey("刷新", "主页", "选项");
         isOpen = false;
     }
     else {

@@ -7,24 +7,21 @@
     <link rel="stylesheet" type="text/css" href="../lib/common.css" />
     <title>凯哔哩-用户</title>
     <script src="../lib/jquery.min.js"></script>
-    <script src="../lib/jquery.cookie.min.js"></script>
+    <script src="../lib/jquery.cookie.min.js"></script> 
+    <script src="../lib/qrcode.min.js" type="text/javascript"></script>
     <script src="../lib/md5.min.js"></script>
     <script src="../lib/jsencrypt.min.js"></script>
-    <script src="../lib/loading.js"></script>
+    <script src="../lib/loading.js"></script> 
     <script src="../app.js"></script>
-    <script src="./index.js"></script>
-    <script src="./user.js"></script>
 </head>
 
 <body>
     <div class="login">
         <p>
-            <label>账号</label>
-            <input id="name" class="item" type="text" />
+           <div id="qrcodeimg" style="width: 200px;height: 200px;"></div>
         </p>
         <p>
-            <label>密码</label>
-            <input id="pwd" class="item" type="password" />
+            <label id="logintips">请使用哔哩app扫码登录</label> 
         </p>
     </div>
     <div class="info">
@@ -48,7 +45,8 @@
             <li class="menuitem" data-tag="ct">收藏</li>
             <li class="menuitem" data-tag="at">关注</li>
         </ul>
-    </div>
+    </div> 
+    <script src="./index.js"></script> 
 </body>
 
 <footer id="softkeys">
