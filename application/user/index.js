@@ -1,5 +1,5 @@
 let userId = 0;
-let isOpen = false, self = false;
+let isOpen = false, selfvalue = false;
 
 let urlQrCode = "https://passport.bilibili.com/x/passport-login/web/qrcode/generate?source=main-fe-header"
 //urlQrCode = "http://passport.bilibili.com/qrcode/getLoginUrl"
@@ -39,7 +39,7 @@ function loadLoginQrCode()
         var dataPoll = $.postApi(urlPoll,'local_id=0&auth_code='+qrcode_key,tv); 
 
         //var dataPoll = $.postApi(urlPoll,"oauthKey="+qrcode_key); 
-        console.log(dataPoll)
+        //console.log(dataPoll)
         var code = dataPoll.code
         if (code == 0) {
             clearInterval(intervalCheck)
@@ -73,14 +73,14 @@ function loadLoginQrCode()
         }
     },1000)
 }
-
-$(function () {
+function refresh_self() {
     var mid = $.getQueryVar('mid');
-    if (mid === false) {
-        self = true;
+    if (!mid) {
+        selfvalue = true;
         var id = $.getData('mid');
         if (typeof id != 'undefined' && id != null && id != '') {
             userId = parseInt(id);
+            $('#softkey-left').text('刷新');
             setUserInfo();
         }
         else {
@@ -91,16 +91,19 @@ $(function () {
         }
     }
     else {
+        $('#softkey-left').text('刷新');
         var id = $.getData('mid');
         if (id == mid) {
-            self = true;
-            softkey("", "", "选项");
+            selfvalue = true;
+            softkey("刷新", "", "选项");
         }
         userId = mid;
         setUserInfo();
     }
     document.activeElement.addEventListener('keydown', handleKeydown);
-});
+}
+
+$(refresh_self);
 
 function handleKeydown(e) {
     $.clearEvent(e);
@@ -115,10 +118,16 @@ function handleKeydown(e) {
         case 'SoftLeft':
             if (!isOpen) {
                 if (userId == 0)
+                {
                     loadLoginQrCode();
                     //login();
-                else
-                    logout();
+                }
+                else{
+                    //logout();
+                    selfvalue=false;
+                    setUserInfo();
+                    refresh_self();
+                }  
             }
             else {
                 navigate();
@@ -152,6 +161,11 @@ function navigate() {
         case 'at':
             window.location.href = '../attention/index.html';
             break;
+        case 'logout':
+            logout();
+            showhideMenu();
+            break;
+            
     }
 }
 
@@ -162,14 +176,20 @@ function showhideMenu() {
         isOpen = false;
     }
     else {
-        if (!self) {
+        if (!selfvalue) {
             $('*[data-tag="at"]').hide();
             $('*[data-tag="ct"]').hide();
         }
+        menuIndex=0;
         $("#menu").show();
         var items = document.querySelectorAll('.menuitem');
+        items.forEach(function (item, index) { 
+            $(item).removeClass('select'); 
+        }); 
+        var items = document.querySelectorAll('.menuitem:not([style*="display:none"]):not([style*="display: none"]');
         items[0].focus();
-        softkey("选择", "", "返回");
+        $(items[0]).addClass('select');
+        softkey("选择", "主页", "返回");
         isOpen = true;
     }
 }
@@ -213,7 +233,8 @@ function nav(move) {
     }
     else {
         var next = menuIndex + move;
-        var items = document.querySelectorAll('.menuitem');
+        var items = document.querySelectorAll('.menuitem:not([style*="display:none"]):not([style*="display: none"]');
+        //console.log(items)  
         if (next >= items.length) {
             next = items.length - 1;
         }
@@ -260,7 +281,7 @@ function login() {
 
 function setUserInfo() {
     var userInfo = null;
-    if (self)
+    if (selfvalue)
         userInfo = $.getData('userInfo');
     if (typeof userInfo == 'undefined' || userInfo == null || userInfo == '') {
         var url = 'https://app.bilibili.com/x/v2/space?ps=10&vmid=' + userId;
@@ -278,9 +299,9 @@ function setUserInfo() {
         $('#fans').text(' 粉丝 ' + info.data.card.fans);
         $('#sign').text(info.data.card.sign);
     }
-    if (self) {
+    if (selfvalue) {
         localStorage.setItem('userInfo', userInfo);
-        $('#softkey-left').text('注销');
+        //$('#softkey-left').text('注销');
     }
     $(".login").hide();
     $(".info").show();

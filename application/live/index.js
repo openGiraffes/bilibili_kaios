@@ -200,12 +200,12 @@ function nav(move) {
 }
 
 function getLiveRoomNumer(uid) {
-  var id, link = 'https://api.bilibili.com/x/space/acc/info?mid=' + uid;
+  var id, link ='https://api.live.bilibili.com/xlive/web-room/v1/index/getRoomBaseInfo?uids='+uid+'&req_biz=video';//'https://api.bilibili.com/x/space/acc/info?mid=' + uid;
   $.ajax({
     url: link,
     async: false,
     success: function (result) {
-      id = result.data.live_room.roomid.toString();
+      id = result.data.by_uids[uid].room_id.toString();
       var name = result.data.name;
       var sign = result.data.sign;
       var title = result.data.live_room.title;
