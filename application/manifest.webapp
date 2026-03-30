@@ -1,7 +1,7 @@
 {
   "name": "哔哩哔哩",
   "description": "哔哩哔哩KaiOS版",
-  "version": "1.8.8",
+  "version": "1.8.9",
   "launch_path": "/index.html",
   "type": "privileged",
   "origin": "app://kai.baiyang.bilibili",
