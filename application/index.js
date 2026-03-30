@@ -174,38 +174,52 @@ function getZList() {
   try {
     var url =
       "https://api.live.bilibili.com/xlive/app-interface/v1/relation/liveAnchor?actionKey=appkey&device=android&qn=0&sortRule=0&filterRule=0";
-    var data = $.getApi(url, "text");
+    var data = $.getApi(url); // 传入默认key，避免错误的 "text" 参数
+    console.log("getZList data:", data);
     $(".items").empty();
-    if (data != null && data.code == 0) {
-      var result = data.data.rooms;
-      if (result != null && result.length > 0) {
-        //建立列表
-        $.each(result, function (r, i) {
-          appendZ(i.uid, i.uname, i.title, i.cover, i.online, r + "");
-        });
-        var index = 0;
-        if (thisrefLiveIndex) {
-          index = thisrefLiveIndex;
-          thisrefLiveIndex = 0;
-        }
-        else if (lastliveIndex) {
-          index = lastliveIndex;
-        }
-        if (document.querySelectorAll(".item")[index]) {
-          document.querySelectorAll(".item")[index].focus();
-        }
-        else {
-          if ($(".item").length > 0)
-            document.querySelectorAll(".item")[0].focus();
-        }
+
+    if (!data) {
+      $(".items").append("网络错误，请重试。");
+      return;
+    }
+
+    if (data.code !== 0) {
+      $(".items").append("接口返回错误：" + (data.message || data.code));
+      console.warn("getZList 接口错误", data);
+      return;
+    }
+
+    var result = data.data && data.data.rooms;
+    if (Array.isArray(result) && result.length > 0) {
+      //建立列表
+      $.each(result, function (r, i) {
+        appendZ(i.uid, i.uname, i.title, i.cover, i.online, r + "");
+      });
+      var index = 0;
+      if (thisrefLiveIndex) {
+        index = thisrefLiveIndex;
+        thisrefLiveIndex = 0;
+      }
+      else if (lastliveIndex) {
+        index = lastliveIndex;
+      }
+      if (document.querySelectorAll(".item")[index]) {
+        document.querySelectorAll(".item")[index].focus();
       }
       else {
-        $(".items").append("关注的UP没有一个在直播qaq~");
+        if ($(".item").length > 0)
+          document.querySelectorAll(".item")[0].focus();
       }
+    }
+    else {
+      $(".items").append("关注的UP没有一个在直播qaq~");
     }
   } catch (e) {
     console.log(e);
-    getZList();
+    $(".items").empty();
+    $(".items").append("直播加载失败，请重试。");
+    // 失败时不递归调用，避免无限循环
+    //setTimeout(getZList, 1500);
   }
 }
 
