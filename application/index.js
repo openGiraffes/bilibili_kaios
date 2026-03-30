@@ -2,8 +2,7 @@ var thisRef = {};
 var thisrefLiveIndex = 0, lastSearchIndex = 0, day = 3, nowpage = 1, lastHotIndex = 0;
 var lastliveIndex = 0, lastmoreIndex = 0, isshowmenu = 0, lastindex = 0, searchPage = 1, tab_location = 1;
 var lastl = "", lastm = "", lastr = "",  searchdata = "";
-var ajax = null;
-var roominfourl = "https://api.live.bilibili.com/room/v1/Room/getRoomInfoOld?mid=";
+var ajax = null;var recommendRefreshTimer = null; // 推荐定时刷新var roominfourl = "https://api.live.bilibili.com/room/v1/Room/getRoomInfoOld?mid=";
 var setCookieUrl = "https://data.bilibili.com/v/web/web_page_view";
 var menu = ["用户", "设置", "退出"];
 $(function () {
@@ -326,10 +325,10 @@ function tab(move) {
   else if (currentIndex === 2) 
     lastliveIndex = document.activeElement.tabIndex;
   var next = currentIndex + move;
-  if (next > 3) 
+  if (next > 4) 
     next = 0;
   if (next < 0) 
-    next = 3;
+    next = 4;
   var items = document.querySelectorAll("li");
   var targetElement = items[next];
   if (targetElement != undefined) {
@@ -403,6 +402,11 @@ function load() {
         '<div tabIndex="5" class="item small">设置</div>';
       $(".items").append(rows);
       softkey("选择", "", "选项");
+      break;
+    }
+    case 4: {
+      loadRecommend();
+      softkey("刷新", "播放", "选项");
       break;
     }
   }
@@ -552,6 +556,9 @@ function refresh(ignoremenu) {
       case 1:
         lastHotIndex = 0;
         break;
+      case 4:
+        // 推荐不需要重置索引
+        break;
     }
   }
   switch (tab_location) {
@@ -565,6 +572,9 @@ function refresh(ignoremenu) {
     case 2:
       refreshLive();
       load();
+      break;
+    case 4:
+      loadRecommend();
       break;
   }
 }
@@ -607,6 +617,14 @@ function enter() {
       };
       var link = "./live/index.html?uid=" + $(document.querySelectorAll(".item")[currentIndex]).data("uid") + "&ref=" + escape(JSON.stringify(ref));
       window.location.href = link;
+      break;
+    case 4:
+      var currentIndex = document.activeElement.tabIndex;
+      if (currentIndex < 0) {
+        alert("请先选择一个视频！");
+        return;
+      }
+      openV();
       break;
   }
 }
@@ -687,4 +705,111 @@ function SoftRight() {
       showhideMenu(menu);
       break;
   }
+}
+
+function checkBiliLogin(callback) {
+  var url = "https://api.bilibili.com/x/web-interface/nav";
+  $.ajax({
+    url: url,
+    type: "GET",
+    dataType: "json",
+    xhrFields: { withCredentials: true },
+    crossDomain: true,
+    success: function (result) {
+      var isLogin = result && result.code === 0 && result.data && result.data.isLogin;
+      console.log("checkBiliLogin 结果", result);
+      callback(isLogin, result);
+    },
+    error: function (xhr, textStatus, error) {
+      console.log("checkBiliLogin 失败", textStatus, error, xhr);
+      callback(false, null);
+    }
+  });
+}
+
+function mapRecommendItem(item) {
+  var mapped = {
+    aid: item.id || item.aid || (item.param && item.param.match(/^\d+$/) ? item.param : "") || "",
+    bvid: item.bvid || "",
+    cid: item.cid || "",
+    title: item.title || item.name || item.title_name || "",
+    pic: item.pic || item.cover || item.image || item.img || "",
+    author: (item.owner && item.owner.name) || item.author || item.up_name || ""
+  };
+  if (mapped.pic && mapped.pic.startsWith("//")) {
+    mapped.pic = "http:" + mapped.pic;
+  }
+  return mapped;
+}
+
+function loadRecommendOnce() {
+  $(".items").empty();
+  if (navigator.onLine == false) {
+    $(".items").append("请连接互联网！");
+    return;
+  }
+  $(".items").append("正在加载推荐…");
+
+  checkBiliLogin(function (isLogin) {
+    var url = "https://api.bilibili.com/x/web-interface/wbi/index/top/feed/rcmd?ps=20";
+    console.log(isLogin ? "已登录B站网页版" : "未登录B站网页版", "，使用网页版WBI推荐接口请求：", url);
+    var result;
+    try {
+      result = $.getApi(url);
+      console.log("loadRecommendOnce $.getApi 返回:", result);
+    } catch (e) {
+      console.log("loadRecommendOnce $.getApi异常:", e);
+      $(".items").empty();
+      $(".items").append("网络错误，无法加载推荐（getApi异常）。");
+      return;
+    }
+
+    var items = [];
+    if (result && result.code == 0 && result.data) {
+      items = result.data.item || result.data.items || result.data.list || [];
+      if (!Array.isArray(items) && result.data && typeof result.data === "object") {
+        // 部分接口可能直接把推荐对象放在data中
+        items = result.data.recommend || result.data;
+      }
+    }
+
+    if (Array.isArray(items) && items.length > 0) {
+      $(".items").empty();
+      $.each(items, function (r, item) {
+        var v = mapRecommendItem(item);
+        if (!v.pic) {
+          v.pic = item.cover || item.image || item.img || "";
+        }
+        appendV(v, r + "");
+      });
+      if (document.querySelectorAll(".item")[0]) {
+        document.querySelectorAll(".item")[0].focus();
+      }
+    } else {
+      $(".items").empty();
+      var message = "加载推荐失败，请稍后重试。";
+      if (result && result.message) {
+        message += "（" + result.code + ": " + result.message + "）";
+      }
+      $(".items").append(message);
+    }
+  });
+}
+
+function loadRecommend() {
+  if (recommendRefreshTimer) {
+    clearInterval(recommendRefreshTimer);
+    recommendRefreshTimer = null;
+  }
+  loadRecommendOnce();
+  recommendRefreshTimer = setInterval(function () {
+    if (tab_location === 4) {
+      console.log("定时刷新推荐（tab 4）");
+      loadRecommendOnce();
+    } else {
+      clearInterval(recommendRefreshTimer);
+      recommendRefreshTimer = null;
+      console.log("离开推荐页，停止定时刷新");
+    }
+  }, 60000); // 60s 轮询
 }
