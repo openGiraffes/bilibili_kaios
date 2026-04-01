@@ -339,10 +339,10 @@ function tab(move) {
   else if (currentIndex === 2) 
     lastliveIndex = document.activeElement.tabIndex;
   var next = currentIndex + move;
-  if (next > 4) 
+  if (next > 6)  // 原来是 4，现在改为 6
     next = 0;
   if (next < 0) 
-    next = 4;
+    next = 6; // 原来是 4，现在改为 6
   var items = document.querySelectorAll("li");
   var targetElement = items[next];
   if (targetElement != undefined) {
@@ -421,6 +421,18 @@ function load() {
     case 4: {
       loadRecommend();
       softkey("刷新", "播放", "选项");
+      break;
+    }
+    case 5: {// 新增：收藏
+      $(".items").empty();
+      $(".items").append("<div style='text-align:center;margin-top:20px;'>按“确认”键进入我的收藏</div>");
+      softkey("刷新", "进入", "选项");
+      break;
+    }
+    case 6: { // 动态
+      $(".items").empty();
+      $(".items").append("<div style='text-align:center; padding-top:20px;'>按“确认”键查看动态</div>");
+      softkey("刷新", "进入", "选项");
       break;
     }
   }
@@ -640,7 +652,26 @@ function enter() {
       }
       openV();
       break;
-  }
+      case 5: // 新增收藏跳转
+      var ref = {
+        tab_location: tab_location,
+        tabIndex: 0,
+        nowpage: nowpage,
+        searchdata: searchdata,
+        searchPage: searchPage,
+      };
+      window.location.href = "./collection/index.html?ref=" + escape(JSON.stringify(ref));
+      break;
+      case 6: // 新增动态跳转
+      var ref = {
+        tab_location: tab_location,
+        tabIndex: 0,
+        nowpage: nowpage,
+        searchdata: searchdata,
+        searchPage: searchPage,
+      };
+      window.location.href = "./dynamic/index.html?ref=" + escape(JSON.stringify(ref));
+      break;}
 }
 
 function setLastindex() {

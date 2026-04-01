@@ -13,14 +13,18 @@
   z-index: 2;
 }
 
-.tab li {
-  float: left;
-  list-style: none;
-  margin: 7.5;
-  font-size: 14px;
-  position: relative;
-  top: -3px;
+.tab ul {
+  display: flex;
+  justify-content: space-around; /* 自动在水平方向均匀分配空间 */
+  align-items: center;
+  width: 100%;
+  padding: 0;
 }
+
+.tab li {
+  list-style: none;
+  font-size: 14px;
+  position: relative;}
 
 .focus {
   border-bottom: 3px solid #d26585;
