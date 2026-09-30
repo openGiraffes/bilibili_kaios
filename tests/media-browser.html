@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<title>媒体分段加载验证</title>
+<script src="/lib/jquery.min.js"></script>
+<script src="/app.js"></script>
+<script src="/lib/mp4box.all.min.js"></script>
+<script src="/lib/flv.min.js"></script>
+<script src="/lib/bili-media.js"></script>
+<body>
+<video id="video" controls muted width="240" height="160"></video>
+<p id="state">等待播放</p>
+<button id="fast">播放 moov 在头部的 MP4</button>
+<button id="tail">播放 moov 在尾部的 MP4</button>
+<button id="seek">跳转至 70 秒</button>
+<button id="end">跳转至末尾</button>
+<button id="audio">播放 M4A 音频</button>
+<button id="live">播放 FLV 流</button>
+<button id="stop">停止并释放</button>
+<script>
+var testPlayer, video = document.getElementById('video'), state = document.getElementById('state');
+function show() {
+    state.textContent = '进度 ' + video.currentTime.toFixed(1) + ' / ' + video.duration.toFixed(1) +
+        '，就绪 ' + video.readyState + '，缓冲段 ' + video.buffered.length;
+}
+function play(name, type, live) {
+    if (testPlayer) testPlayer.destroy();
+    state.textContent = '加载中';
+    testPlayer = $.biliMedia.createPlayer({ type: type || 'mp4', isLive: !!live,
+        url: 'https://fixture.bilivideo.com/' + name });
+    testPlayer.on('error', function (error) { state.textContent = '错误：' + error; });
+    testPlayer.attachMediaElement(video);
+    testPlayer.load();
+    $.biliMedia.play(testPlayer);
+}
+document.getElementById('fast').onclick = function () { play('fast.mp4'); };
+document.getElementById('tail').onclick = function () { play('tail.mp4'); };
+document.getElementById('live').onclick = function () { play('live.flv', 'flv', true); };
+document.getElementById('seek').onclick = function () { video.currentTime = 70; $.biliMedia.play(video); };
+document.getElementById('end').onclick = function () { video.currentTime = video.duration; $.biliMedia.play(video); };
+document.getElementById('audio').onclick = function () { play('audio.m4a'); };
+document.getElementById('stop').onclick = function () { testPlayer.destroy(); testPlayer = null; state.textContent = '已停止'; };
+video.addEventListener('timeupdate', show);
+video.addEventListener('loadedmetadata', show);
+video.addEventListener('error', function () { state.textContent = '解码错误：' + video.error.message; });
+</script>
+</body>
+</html>

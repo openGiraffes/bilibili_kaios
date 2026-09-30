@@ -1,5 +1,6 @@
 let sid = 0, mid = 0;
 let audio = null;
+let audioPlayer = null;
 $(function () {
     audio = new Audio();
     audio.loop = true;
@@ -30,13 +31,19 @@ $(function () {
     document.activeElement.addEventListener('keydown', handleKeydown);
 });
 function playMusic(uri) {
-    audio.pause();
-    audio.src = uri;
-    audio.play();
+    if (audioPlayer) audioPlayer.destroy();
+    audioPlayer = $.biliMedia.createPlayer({ type: 'mp4', url: uri });
+    audioPlayer.on('error', function (error) {
+        console.error('音频加载失败', error);
+        alert('音频加载失败：' + error);
+    });
+    audioPlayer.attachMediaElement(audio);
+    audioPlayer.load();
+    audioPlayer.play();
 }
 function playOrPause() {
     if (audio.paused)
-        audio.play();
+        $.biliMedia.play(audio);
     else
         audio.pause();
 }
@@ -98,7 +105,7 @@ function seekTo(type) {
             else if (next > audio.duration)
                 next = audio.duration;
             audio.currentTime = next;
-            audio.play();
+            $.biliMedia.play(audio);
         }
     }
     catch (e) {

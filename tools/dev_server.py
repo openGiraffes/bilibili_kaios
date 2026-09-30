@@ -10,16 +10,27 @@ import re
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, unquote
 from urllib.request import build_opener, HTTPCookieProcessor, HTTPRedirectHandler, Request
 
 
 PREFIX = '/__bili_proxy__/'
+MEDIA_PREFIX = '/__bili_media__/'
 HOSTS = {'api.bilibili.com', 'api.live.bilibili.com', 'api.vc.bilibili.com',
          'passport.bilibili.com', 'app.bilibili.com', 'www.bilibili.com',
          'bangumi.bilibili.com'}
 USER_AGENT = ('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 '
               '(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36')
+CDN_DOMAINS = {'bilibili.com', 'hdslb.com', 'bilivideo.com', 'bilivideo.cn', 'acgvideo.com', 'szbdyd.com'}
+
+
+def media_target_allowed(url):
+    target = urlsplit(url)
+    return (target.scheme == 'https' and not target.username and not target.password
+            and target.port in (None, 443, 4483)
+            and (target.hostname in HOSTS or any(
+                target.hostname and (target.hostname == domain or target.hostname.endswith('.' + domain))
+                for domain in CDN_DOMAINS)))
 
 
 class BiliRedirects(HTTPRedirectHandler):
@@ -30,15 +41,30 @@ class BiliRedirects(HTTPRedirectHandler):
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
+class MediaRedirects(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        if not media_target_allowed(newurl):
+            raise HTTPError(req.full_url, 502, 'Unsupported media redirect', headers, fp)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
 class Handler(SimpleHTTPRequestHandler):
     opener = build_opener(BiliRedirects(), HTTPCookieProcessor(http.cookiejar.CookieJar()))
     upstream_lock = threading.Lock()
 
     def do_GET(self):
-        if self.path.startswith(PREFIX):
+        if self.path.startswith(MEDIA_PREFIX):
+            self.proxy_media()
+        elif self.path.startswith(PREFIX):
             self.proxy()
         else:
             super().do_GET()
+
+    def do_HEAD(self):
+        if self.path.startswith(MEDIA_PREFIX):
+            self.proxy_media()
+        else:
+            super().do_HEAD()
 
     def do_POST(self):
         if self.path.startswith(PREFIX):
@@ -48,9 +74,58 @@ class Handler(SimpleHTTPRequestHandler):
 
     def log_message(self, fmt, *args):
         # Login query strings and POST bodies must not end up in terminal logs.
-        if self.path.startswith(PREFIX):
+        if self.path.startswith((PREFIX, MEDIA_PREFIX)):
             return
         super().log_message(fmt, *args)
+
+    def proxy_media(self):
+        origin = self.headers.get('Origin')
+        if origin and origin != 'http://' + self.headers.get('Host', ''):
+            self.send_error(403, 'Local same-origin requests only')
+            return
+        sent_headers = False
+        try:
+            target = unquote(self.path[len(MEDIA_PREFIX):])
+            if not media_target_allowed(target) or re.search(r'[\r\n]', target):
+                self.send_error(400, 'Unsupported media target')
+                return
+            headers = {'User-Agent': USER_AGENT, 'Referer': 'https://www.bilibili.com/',
+                       'Origin': 'https://www.bilibili.com', 'Accept-Encoding': 'identity'}
+            for name in ('Range', 'If-Range', 'Accept'):
+                if self.headers.get(name):
+                    headers[name] = self.headers[name]
+            request = Request(target, headers=headers, method=self.command)
+            # A separate, cookieless opener per stream: CDN requests never receive
+            # login cookies, and long live streams do not block API/image requests.
+            opener = build_opener(MediaRedirects())
+            try:
+                response = opener.open(request, timeout=30)
+            except HTTPError as error:
+                response = error
+            with response:
+                self.send_response(response.code)
+                for name in ('Content-Type', 'Content-Length', 'Content-Range', 'Accept-Ranges',
+                             'ETag', 'Last-Modified', 'Content-Encoding'):
+                    if response.headers.get(name):
+                        self.send_header(name, response.headers[name])
+                self.send_header('Cache-Control', 'no-store')
+                self.end_headers()
+                sent_headers = True
+                if self.command != 'HEAD':
+                    while True:
+                        chunk = response.read1(64 * 1024)
+                        if not chunk:
+                            break
+                        self.wfile.write(chunk)
+                        self.wfile.flush()
+            print(f'Media {self.command} {urlsplit(target).hostname} -> {response.code}', flush=True)
+        except (BrokenPipeError, ConnectionResetError):
+            # Closing the upstream context above also cancels live playback.
+            pass
+        except (URLError, TimeoutError, OSError, ValueError) as error:
+            if not sent_headers:
+                self.send_error(502, 'Local media proxy could not reach Bilibili')
+            print(f'Media connection failed: {type(error).__name__}', flush=True)
 
     def proxy(self):
         origin = self.headers.get('Origin')

@@ -44,8 +44,20 @@ $.extend({
         } catch (e) { }
         var localDebug = !systemXHR && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname)
             && /^https?:$/.test(window.location.protocol);
+        $.biliTransport = {
+            systemXHR: systemXHR,
+            localDebug: localDebug,
+            headers: {
+                'Referer': 'https://www.bilibili.com/',
+                'Origin': 'https://www.bilibili.com',
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Mobile Safari/537.36'
+            },
+            createXHR: function () {
+                return systemXHR ? new XMLHttpRequest({ mozSystem: true }) : new XMLHttpRequest();
+            }
+        };
         $.ajaxSettings.xhr = function () {
-            return systemXHR ? new XMLHttpRequest({ mozSystem: true }) : new XMLHttpRequest();
+            return $.biliTransport.createXHR();
         };
         if (!systemXHR && window.location.protocol === 'app:') {
             console.warn('Bilibili: systemXHR permission is not active; check the installed app permissions.');
@@ -56,11 +68,7 @@ $.extend({
             if (systemXHR) {
                 // jQuery applies headers after xhr.open() and before xhr.send().
                 // Only an actual System XHR may set these restricted headers.
-                options.headers = $.extend({
-                    'Referer': 'https://www.bilibili.com/',
-                    'Origin': 'https://www.bilibili.com',
-                    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Mobile Safari/537.36'
-                }, options.headers);
+                options.headers = $.extend({}, $.biliTransport.headers, options.headers);
             } else if (localDebug) {
                 options.url = '/__bili_proxy__/' + match[1] + (match[2] || '/');
                 options.crossDomain = false;

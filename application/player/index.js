@@ -27,26 +27,24 @@ $(function () {
 function playVideo(url, type, position) {
 	if (typeof player !== "undefined") {
 		if (player != null) {
-			player.unload();
-			player.detachMediaElement();
 			player.destroy();
 			player = null;
 		}
 	}
-	player = flvjs.createPlayer({
+	player = $.biliMedia.createPlayer({
 		type: type,
 		isLive: false,
 		url: url
 	});
-	player.on(flvjs.Events.ERROR, function () {
-		var t = this.currentTime;
-		playVideo(url, type, t);
+	player.on('error', function (error) {
+		console.error('视频加载失败', error);
+		alert('视频加载失败，请重新播放：' + error);
 	});
 	player.attachMediaElement(document.getElementById('player'));
 	player.load();
 	if (typeof position !== 'undefined')
 		player.currentTime = position;
-	player.play();
+	$.biliMedia.play(player);
 }
 function openV() {
 	const currentIndex = document.activeElement.tabIndex;
@@ -67,11 +65,7 @@ function playV(part) {
 				playurl = playurl.replace("readyVideoUrl: '", "");
 				playurl = playurl.replace("',", "");
 				if (playurl) {
-					var player = document.getElementById("player");
-					player.src = playurl;
-					player.width = 240;
-					player.height = 150;
-					player.play();
+					playVideo(playurl, 'mp4');
 					$.Async().then(function () {
 						if (danmaku == 1)
 							$.getDanmaku('palyercontainter', 'player', cid);
@@ -306,7 +300,7 @@ function seekTo(type) {
 			else if (next > player.duration)
 				next = player.duration;
 			player.currentTime = next;
-			player.play();
+			$.biliMedia.play(player);
 		}
 	}
 	catch (e) {
@@ -533,7 +527,7 @@ function enter() {
 				try {
 					var video = document.getElementById("player");
 					if (video.paused == true) {
-						video.play();
+						$.biliMedia.play(video);
 						$('#softkey-center').text('暂停');
 					} else {
 						video.pause();

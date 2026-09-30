@@ -38,7 +38,20 @@ KaiOS 已安装应用会检查 `xhr.mozSystem === true`，权限生效后直接�
 
 代理只监听本机，并限制目标域名。上游 Set-Cookie 保存在服务器内存中，重启即清空；它不会读取浏览器中已有的 B 站 Cookie。需要调试 Web 登录接口时，可以通过环境变量 `BILIBILI_COOKIE` 提供自己的 Cookie，不要将其提交到仓库。TV 扫码登录的 access_token 与 Web Cookie 是不同的登录状态。
 
-该代理处理 B 站 HTTP 接口，不代理图片、视频 CDN、直播 WebSocket 或第三方旧番剧接口。HTTP 200 但 JSON `code` 非零表示 B 站业务错误，例如 `-101` 为未登录；仍返回 403/412 或风控错误的单个接口需要进一步检查登录状态、签名或接口变更，不能仅靠跨域代理解决。
+该代理同时处理 B 站 HTTP 接口和图片、视频、音频、直播媒体 CDN。媒体使用独立的 `/__bili_media__/` 路径，保留 Range / Content-Range / 206 状态并流式转发，媒体 CDN 不接收登录 Cookie。直播弹幕 WebSocket、iframe 中的第三方页面及旧番剧第三方接口仍使用各自原有的加载方式。HTTP 200 但 JSON `code` 非零表示 B 站业务错误，例如 `-101` 为未登录；仍返回 403/412 或风控错误的单个接口需要进一步检查登录状态、签名或接口变更，不能仅靠请求头解决。
+
+所有页面加载 `lib/bili-media.js`：远程封面/头像通过 XHR 下载为 Blob（最多 4 个并发，单图上限 4 MiB），移除图片或离开页面时取消请求并释放 Blob；本地 SVG、图标及二维码保持原生加载。MP4/M4A 使用 256 KiB Range 请求和 MediaSource 按需播放，保留约 20 秒前向缓冲并清理较旧缓冲；跳转到未缓冲位置会重新初始化解析器，避免整段下载。FLV 使用自定义 loader，在 KaiOS 使用 `moz-chunked-arraybuffer`；本地浏览器直播通过同源代理和 Fetch stream 读取。
+
+MP4/M4A 依赖设备的 MediaSource 和相应编解码器，以及媒体 CDN 的 HTTP Range 支持；不支持时会报告错误，不会自动回退到缺少请求头的原生远程 src。已在桌面浏览器验证 MP4、尾部 moov、跳转、M4A 和 FLV，KaiOS 真机兼容性仍需验证。MP4Box.js 0.5.4 已随应用打包，来自官方 npm 包，授权文件位于 `application/lib/mp4box.LICENSE`。
+
+回归检查：
+
+```sh
+node --test tests/*.test.js
+python3 -B tests/dev_server_test.py
+```
+
+浏览器媒体验证页面由独立的 `tests/media_fixture_server.py` 提供，不随应用打包；用 ffmpeg 生成 90 秒的 H.264/AAC `fast.mp4`（faststart）、`tail.mp4`（moov 在尾部）、`audio.m4a` 和 `live.flv`，然后运行 `python3 -B tests/media_fixture_server.py --fixtures /临时文件夹`，打开 `http://127.0.0.1:8088/media-browser.html` 可验证播放、跳转和释放。
 
 ## TODO List
 

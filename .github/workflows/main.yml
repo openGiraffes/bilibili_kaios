@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       - name: Package application.zip
         run: |
@@ -25,10 +25,11 @@ jobs:
           mv metadata.json workdir/metadata.json
 
       - name: Build artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v7
         with:
           name: bilibili_kaios-omnisd-nightly
           path: ./workdir/*
+          if-no-files-found: error
 
       - name: Upload nightly release
         uses: svenstaro/upload-release-action@v2

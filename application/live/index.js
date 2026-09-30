@@ -1,5 +1,6 @@
 var thisRoomId = 0;
 var tab_location = 0;
+var player = null;
 $(function () {
   document.activeElement.addEventListener('keydown', handleKeydown);
   thisRoomId = getLiveRoomNumer($.getQueryVar('uid'));
@@ -45,14 +46,19 @@ function makeLive(room_id) {
         var data = result.data.playurl_info.playurl.stream[0].format[0].codec[0];
         var url = data.url_info[0].host + data.base_url + data.url_info[0].extra;
         try {
-          player = flvjs.createPlayer({
+          if (player) player.destroy();
+          player = $.biliMedia.createPlayer({
             type: 'flv',
             isLive: true,
             url: url
           });
+          player.on('error', function (error) {
+            console.error('直播加载失败', error);
+            alert('直播加载失败，请重新加载：' + error);
+          });
           player.attachMediaElement(document.getElementById('player'));
           player.load();
-          player.play();
+          $.biliMedia.play(player);
         }
         catch (e) {
           console.log(e);
@@ -235,7 +241,7 @@ function enter() {
   }
   else {
     if (document.getElementById('player').paused == true) {
-      document.getElementById('player').play();
+      $.biliMedia.play(document.getElementById('player'));
       $('#softkey-center').text('暂停');
     }
     else {
