@@ -36,11 +36,47 @@ $.extend({
         }
     },
     initApi: function () {
+        if ($.biliApiInitialized) return;
+        $.biliApiInitialized = true;
+        var systemXHR = false;
+        try {
+            systemXHR = new XMLHttpRequest({ mozSystem: true }).mozSystem === true;
+        } catch (e) { }
+        var localDebug = !systemXHR && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname)
+            && /^https?:$/.test(window.location.protocol);
         $.ajaxSettings.xhr = function () {
-            try {
-                return new XMLHttpRequest({ mozSystem: true });
-            } catch (e) { }
+            return systemXHR ? new XMLHttpRequest({ mozSystem: true }) : new XMLHttpRequest();
         };
+        if (!systemXHR && window.location.protocol === 'app:') {
+            console.warn('Bilibili: systemXHR permission is not active; check the installed app permissions.');
+        }
+        $.ajaxPrefilter(function (options) {
+            var match = /^(?:https?:)?\/\/((?:[a-z0-9-]+\.)*bilibili\.com)(\/.*)?$/i.exec(options.url);
+            if (!match) return;
+            if (systemXHR) {
+                // jQuery applies headers after xhr.open() and before xhr.send().
+                // Only an actual System XHR may set these restricted headers.
+                options.headers = $.extend({
+                    'Referer': 'https://www.bilibili.com/',
+                    'Origin': 'https://www.bilibili.com',
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Mobile Safari/537.36'
+                }, options.headers);
+            } else if (localDebug) {
+                options.url = '/__bili_proxy__/' + match[1] + (match[2] || '/');
+                options.crossDomain = false;
+                var beforeSend = options.beforeSend;
+                options.beforeSend = function (request, settings) {
+                    var setHeader = request.setRequestHeader;
+                    request.setRequestHeader = function (name, value) {
+                        // Browser XHR cannot set Cookie or User-Agent directly.
+                        if (name.toLowerCase() === 'cookie') name = 'X-Bili-Cookie';
+                        if (name.toLowerCase() === 'user-agent') return request;
+                        return setHeader.call(request, name, value);
+                    };
+                    if (beforeSend) return beforeSend.call(this, request, settings);
+                };
+            }
+        });
     },
     postApi: function (url, content, keyValue) {
         var json = null;
@@ -56,7 +92,6 @@ $.extend({
             async: false,
             beforeSend: function (request) {
                 $.showLoading();
-                request.setRequestHeader("user-agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Mobile Safari/537.36")
             },
             success: function (data) {
                 json = data;
@@ -83,7 +118,6 @@ $.extend({
             async: true,
             beforeSend: function (request) {
                 $.showLoading();
-                request.setRequestHeader("user-agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Mobile Safari/537.36")
             },
             success: function (data) {
                 callback(data);
@@ -113,7 +147,6 @@ $.extend({
             async: false,
             beforeSend: function (request) {
                 $.showLoading();
-                request.setRequestHeader("user-agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Mobile Safari/537.36")
             },
             success: function (data) {
                 json = data;
@@ -135,7 +168,6 @@ $.extend({
             async: false,
             beforeSend: function (request) {
                 $.showLoading();
-                request.setRequestHeader("user-agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Mobile Safari/537.36")
             },
             success: function (data) {
                 json = data;
@@ -161,7 +193,6 @@ $.extend({
             async: true,
             beforeSend: function (request) {
                 $.showLoading();
-                request.setRequestHeader("user-agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Mobile Safari/537.36")
             },
             success: function (data) {
                 callback(data);
@@ -262,6 +293,5 @@ $.extend({
     }
 });
 
-$(function () {
-    $.initApi();
-});
+// Register before page scripts can make their first request.
+$.initApi();

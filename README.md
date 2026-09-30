@@ -22,6 +22,24 @@ bilibili for kaios
 |     web      |  网站页面  |
 |     lib      |   引用库   |
 
+## 本地浏览器调试
+
+普通 `python -m http.server` 只提供静态文件，无法使用 KaiOS 应用的 `systemXHR` 权限。浏览器直接请求 B 站接口时会受到跨域和请求头限制。
+
+在仓库根目录运行（Python 3，无需安装依赖）：
+
+```sh
+python3 tools/dev_server.py --port 8086
+```
+
+先停止占用 8086 的旧 HTTP 服务，再打开 `http://127.0.0.1:8086/`。应用在没有 systemXHR 权限的 localhost / 127.0.0.1 环境下会将 jQuery 的 B 站接口请求改写到 `/__bili_proxy__/`；服务器通过 HTTPS 转发原始查询参数和 POST 内容，设置上游 Referer / Origin / User-Agent，并保留上游状态码和响应内容。
+
+KaiOS 已安装应用会检查 `xhr.mozSystem === true`，权限生效后直接请求 B 站，并统一设置 Referer / Origin / User-Agent，无需代理。已有 Cookie 请求头会保留，不会自动生成登录 Cookie。若 app 环境的权限未生效，控制台会提示检查安装权限。此路径需要在 KaiOS 真机上验证；可用 `node --test tests/request-headers.test.js` 检查环境选择和请求头配置逻辑。
+
+代理只监听本机，并限制目标域名。上游 Set-Cookie 保存在服务器内存中，重启即清空；它不会读取浏览器中已有的 B 站 Cookie。需要调试 Web 登录接口时，可以通过环境变量 `BILIBILI_COOKIE` 提供自己的 Cookie，不要将其提交到仓库。TV 扫码登录的 access_token 与 Web Cookie 是不同的登录状态。
+
+该代理处理 B 站 HTTP 接口，不代理图片、视频 CDN、直播 WebSocket 或第三方旧番剧接口。HTTP 200 但 JSON `code` 非零表示 B 站业务错误，例如 `-101` 为未登录；仍返回 403/412 或风控错误的单个接口需要进一步检查登录状态、签名或接口变更，不能仅靠跨域代理解决。
+
 ## TODO List
 
 - [ ] FLV 播放支持（最高 720P、但实测在线播放最高 480P，否则容易崩溃）
